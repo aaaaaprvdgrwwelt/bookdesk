@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from bookdesk.library import LibraryIndex
-from bookdesk.scanner import find_books, scan_folder
+from bookdesk.scanner import ScanWorker, find_books, scan_folder
 
 
 def make_index(tmp_path) -> LibraryIndex:
@@ -51,3 +51,67 @@ def test_scan_folder_only_touches_given_subfolder(tmp_path):
 
     remaining_titles = {i.title for i in index.list_books()}
     assert remaining_titles == {"A", "B"}
+
+
+def make_books(root: Path, count: int) -> None:
+    root.mkdir(parents=True, exist_ok=True)
+    for i in range(count):
+        (root / f"Book {i}.epub").write_bytes(b"")
+
+
+def test_scan_worker_stop_halts_processing_mid_scan(tmp_path):
+    root = tmp_path / "books"
+    make_books(root, 20)
+    library = make_index(tmp_path)
+    worker = ScanWorker([str(root)], library)
+
+    original = library.mark_scanned
+    calls = []
+
+    def counting(*args, **kwargs):
+        calls.append(1)
+        if len(calls) == 5:
+            worker.stop()
+        return original(*args, **kwargs)
+
+    library.mark_scanned = counting
+    worker.run()
+
+    assert len(calls) == 5
+    assert len(library.all_items()) == 5
+
+
+def test_scan_worker_stop_does_not_wrongly_forget_existing_entries(tmp_path):
+    root = tmp_path / "books"
+    make_books(root, 10)
+    library = make_index(tmp_path)
+    ScanWorker([str(root)], library).run()
+    assert len(library.all_items()) == 10
+
+    worker = ScanWorker([str(root)], library)
+    calls = []
+    original = library.mark_scanned
+
+    def counting(*args, **kwargs):
+        calls.append(1)
+        if len(calls) == 3:
+            worker.stop()
+        return original(*args, **kwargs)
+
+    library.mark_scanned = counting
+    worker.run()
+    assert len(library.all_items()) == 10
+
+
+def test_scan_folder_should_stop_halts_processing(tmp_path):
+    root = tmp_path / "books"
+    make_books(root, 10)
+    library = make_index(tmp_path)
+    calls = []
+
+    def should_stop():
+        calls.append(1)
+        return len(calls) > 3
+
+    scan_folder(root, root, library, should_stop=should_stop)
+    assert len(library.all_items()) == 3

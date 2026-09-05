@@ -205,15 +205,15 @@ class MainWindow(QMainWindow):
                 self, _("Scannen"), _("Bitte mindestens einen Ordner hinzufuegen."))
             return
 
-        progress = QProgressDialog(_("Scanne …"), None, 0, 0, self)
+        progress = QProgressDialog(_("Scanne …"), _("Abbrechen"), 0, 0, self)
         progress.setWindowModality(Qt.WindowModal)
         progress.setMinimumDuration(0)
-        progress.setCancelButton(None)
         progress.setAutoClose(False)
         progress.setAutoReset(False)
 
         thread, worker = scanner.run_in_thread(self.settings.book_roots, self.library)
         worker.progress.connect(progress.setLabelText)
+        progress.canceled.connect(worker.stop)
         thread.finished.connect(progress.close)
         thread.finished.connect(self.refresh_view)
         thread.finished.connect(
@@ -228,15 +228,15 @@ class MainWindow(QMainWindow):
         Mal den ganzen Wurzelordner zu durchsuchen."""
         root = Path(book.root)
         folder = subfolder_of(Path(book.path), root)
-        progress = QProgressDialog(_("Scanne …"), None, 0, 0, self)
+        progress = QProgressDialog(_("Scanne …"), _("Abbrechen"), 0, 0, self)
         progress.setWindowModality(Qt.WindowModal)
         progress.setMinimumDuration(0)
-        progress.setCancelButton(None)
         progress.setAutoClose(False)
         progress.setAutoReset(False)
 
         thread, worker = scanner.run_folder_in_thread(folder, root, self.library)
         worker.progress.connect(progress.setLabelText)
+        progress.canceled.connect(worker.stop)
         thread.finished.connect(progress.close)
         thread.finished.connect(self.refresh_view)
         thread.finished.connect(

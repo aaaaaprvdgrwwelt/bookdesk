@@ -57,14 +57,25 @@ class ScanWorker(QObject):
         super().__init__()
         self.book_roots = book_roots
         self.library = library
+        self._stop = False
+
+    def stop(self) -> None:
+        self._stop = True
 
     def run(self) -> None:
         for root in self.book_roots:
+            if self._stop:
+                break
             self.progress.emit(root)
             root_path = Path(root)
             found = find_books(root_path)
             for path in found:
+                if self._stop:
+                    break
                 _scan_one(path, root_path, self.library)
+            # find_books() lief vollstaendig, auch bei einem Abbruch mitten
+            # in der Schleife darueber - das Aufraeumen bleibt deshalb sicher
+            # auf tatsaechlich fehlende Dateien beschraenkt.
             self.library.forget_missing(root_path, {str(p) for p in found})
         self.finished.emit()
 
@@ -79,13 +90,19 @@ def run_in_thread(book_roots: list[str], library: LibraryIndex):
     return thread, worker
 
 
-def scan_folder(folder: Path, root: Path, library: LibraryIndex) -> None:
+def scan_folder(folder: Path, root: Path, library: LibraryIndex,
+                should_stop=None) -> None:
     """Nur `folder` neu einlesen - z. B. der Ordner eines einzelnen Buchs,
     statt des ganzen Wurzelordners `root`. Eintraege werden weiterhin unter
     `root` gefuehrt (wie beim vollen Scan), aber nur unterhalb von `folder`
-    verglichen/aufgeraeumt."""
+    verglichen/aufgeraeumt. `should_stop` ist ein parameterloses Callable,
+    das True liefert, sobald abgebrochen werden soll (siehe
+    FolderScanWorker.stop())."""
+    should_stop = should_stop or (lambda: False)
     found = find_books(folder)
     for path in found:
+        if should_stop():
+            break
         _scan_one(path, root, library)
     library.forget_missing_under(folder, {str(p) for p in found})
 
@@ -103,10 +120,15 @@ class FolderScanWorker(QObject):
         self.folder = folder
         self.root = root
         self.library = library
+        self._stop = False
+
+    def stop(self) -> None:
+        self._stop = True
 
     def run(self) -> None:
         self.progress.emit(str(self.folder))
-        scan_folder(self.folder, self.root, self.library)
+        scan_folder(self.folder, self.root, self.library,
+                   should_stop=lambda: self._stop)
         self.finished.emit()
 
 
