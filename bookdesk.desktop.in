@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=BookDesk
+Comment=Dateimanager fuer E-Books
+Exec=@PREFIX@/bookdesk.sh %f
+Icon=bookdesk
+StartupWMClass=bookdesk
+Terminal=false
+Categories=Office;Viewer;FileTools;
+MimeType=application/epub+zip;application/pdf;
