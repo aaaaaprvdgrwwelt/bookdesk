@@ -66,6 +66,25 @@ def page_count(path: Path) -> int:
         doc.close()
 
 
+def write_metadata(path: Path, meta: BookMeta) -> None:
+    """Titel/Autor in die PDF-Dokumenteigenschaften zurueckschreiben. PDF hat
+    kein Serien-Konzept, das bleibt unbeachtet - anders als bei EPUB wird
+    hier ueber pymupdf inkrementell gespeichert (kein Neuschreiben des
+    gesamten Archivs noetig)."""
+    doc = _open(path)
+    if doc is None:
+        raise ValueError(f"Konnte {path} nicht oeffnen")
+    try:
+        doc.set_metadata({
+            **(doc.metadata or {}),
+            "title": meta.title,
+            "author": ", ".join(meta.authors),
+        })
+        doc.saveIncr()
+    finally:
+        doc.close()
+
+
 def page_image(path: Path, index: int, max_width: int = 1400) -> bytes | None:
     doc = _open(path)
     if doc is None or not (0 <= index < doc.page_count):

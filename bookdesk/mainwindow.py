@@ -18,6 +18,8 @@ from deskkit.actions import ActionRegistry
 from . import matcher, renamer, scanner
 from .appicon import icon as app_icon
 from .config import Settings
+from .formats.base import BookMeta
+from .formats.base import write_metadata as write_book_metadata
 from .helpdialog import HelpDialog
 from .i18n import _, set_language
 from .icons import icon as tool_icon
@@ -224,6 +226,8 @@ class MainWindow(QMainWindow):
              tool_icon("match"))
         a.add("rename", "Umbenennen …", "Ctrl+R", self.rename_preview,
              tool_icon("rename"))
+        a.add("save_metadata", "Metadaten in Datei speichern …", "Ctrl+S",
+             self.write_metadata_to_file, tool_icon("check"))
         a.add("read", "Lesen", "Return", self.read_selected, tool_icon("read"),
              target=self.book_list, shortcut_context=Qt.WidgetWithChildrenShortcut)
         a.add("delete", "Loeschen …", "Del", self.delete_selected,
@@ -289,6 +293,7 @@ class MainWindow(QMainWindow):
 
         menu = bar.addMenu(_("E&xtras"))
         menu.addAction(a["auto_match"])
+        menu.addAction(a["save_metadata"])
         menu.addSeparator()
         menu.addAction(a["settings"])
 
@@ -460,6 +465,51 @@ class MainWindow(QMainWindow):
         if dialog.exec():
             self.refresh_view()
 
+    # --- Metadaten in die Datei zurueckschreiben --------------------------
+    def write_metadata_to_file(self) -> None:
+        """Anders als Umbenennen/Loeschen aendert das die Originaldatei
+        selbst - deshalb ausdruecklich bestaetigen lassen und nie
+        automatisch beim Scannen/Zuordnen aufrufen."""
+        items = self._selected_books()
+        if not items:
+            QMessageBox.information(
+                self, _("Metadaten speichern …"),
+                _("Bitte mindestens eine Datei waehlen."))
+            return
+        box = QMessageBox(self)
+        box.setIcon(QMessageBox.Warning)
+        box.setWindowTitle(_("Metadaten speichern …"))
+        box.setText(
+            _("Metadaten von {n} Datei(en) direkt in die Datei schreiben?")
+            .format(n=len(items)))
+        box.setInformativeText(_(
+            "Das aendert die Originaldatei. Serieninformation wird bei PDF "
+            "nicht unterstuetzt und dabei nicht geschrieben."))
+        box.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+        box.setDefaultButton(QMessageBox.Cancel)
+        if box.exec() != QMessageBox.Yes:
+            return
+
+        errors: list[str] = []
+        for item in items:
+            path = Path(item.path)
+            meta = BookMeta(
+                title=item.title, authors=item.authors, series=item.series,
+                series_index=item.series_index, year=item.year,
+                description=item.description)
+            try:
+                write_book_metadata(path, meta)
+            except Exception as exc:  # noqa: BLE001
+                errors.append(f"{path.name}: {exc}")
+        if errors:
+            QMessageBox.warning(
+                self, _("Metadaten speichern …"),
+                _("Nicht alles konnte gespeichert werden:") + "\n"
+                + "\n".join(errors))
+        else:
+            QMessageBox.information(
+                self, _("Metadaten speichern …"), _("Metadaten gespeichert."))
+
     # --- Lesen ---------------------------------------------------------
     def read_selected(self) -> None:
         item = self._current_book()
@@ -540,6 +590,7 @@ class MainWindow(QMainWindow):
                            lambda: self._manual_match(items[0]))
         menu.addSeparator()
         menu.addAction(self.actions_map["rename"])
+        menu.addAction(self.actions_map["save_metadata"])
         menu.addSeparator()
         menu.addAction(self.actions_map["delete"])
         menu.exec(self.book_list.viewport().mapToGlobal(pos))

@@ -74,3 +74,24 @@ def page_image(path: Path, index: int, max_width: int = 1400) -> bytes | None:
         from . import pdf
         return pdf.page_image(path, index, max_width)
     return None
+
+
+def can_write(path: Path) -> bool:
+    return path.suffix.lower() in BOOK_EXTENSIONS
+
+
+def write_metadata(path: Path, meta: BookMeta) -> None:
+    """Metadaten direkt in die Datei zurueckschreiben - EPUB: OPF-Datei im
+    Archiv ersetzt; PDF: Dokumenteigenschaften (kein Serien-Konzept dort).
+    Nur auf ausdruecklichen Wunsch aufrufen (siehe mainwindow.py), nie
+    automatisch beim Scannen/Zuordnen."""
+    suffix = path.suffix.lower()
+    if suffix in EPUB_EXTENSIONS:
+        from . import epub
+        epub.write_metadata(path, meta)
+        return
+    if suffix in PDF_EXTENSIONS:
+        from . import pdf
+        pdf.write_metadata(path, meta)
+        return
+    raise ValueError(f"Nicht unterstuetztes Format: {suffix}")

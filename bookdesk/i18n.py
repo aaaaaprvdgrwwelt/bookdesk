@@ -55,6 +55,10 @@ DE = {
         "Titel enthielt einen Schrägstrich - wurde durch \" - \" ersetzt.",
     "Treffer waehlen": "Treffer wählen",
     "von Hand gewaehlt": "von Hand gewählt",
+    "Das aendert die Originaldatei. Serieninformation wird bei PDF "
+    "nicht unterstuetzt und dabei nicht geschrieben.":
+        "Das ändert die Originaldatei. Serieninformation wird bei PDF "
+        "nicht unterstützt und dabei nicht geschrieben.",
 }
 EN: dict[str, str] = {}
 
