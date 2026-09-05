@@ -4,3 +4,10 @@ __pycache__/
 *.egg-info/
 build/
 dist/
+
+# Beim Paketbau erzeugt - Symbole entstehen aus dem SVG.
+packaging/bookdesk.ico
+packaging/bookdesk.icns
+packaging/bookdesk.iconset/
+packaging/ico-teile/
+selftest.log
