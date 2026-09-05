@@ -29,6 +29,18 @@ def _read(path: Path) -> _epub.EpubBook | None:
         return None
 
 
+def is_drm_protected(path: Path) -> bool:
+    """`META-INF/encryption.xml` ist der EPUB-Standardweg, ueber den Adobe
+    ADEPT, LCP & Co. den Inhalt verschluesseln - unabhaengig davon, ob
+    ebooklib selbst noch (leere/unvollstaendige) Metadaten herausbekommt,
+    ein zuverlaessiges Signal fuer "diese Datei laesst sich nicht lesen"."""
+    try:
+        with zipfile.ZipFile(path) as zf:
+            return "META-INF/encryption.xml" in zf.namelist()
+    except (OSError, zipfile.BadZipFile):
+        return False
+
+
 def _first(book: _epub.EpubBook, namespace: str, name: str) -> str:
     entries = book.get_metadata(namespace, name)
     return entries[0][0] if entries and entries[0][0] else ""

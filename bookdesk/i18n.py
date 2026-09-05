@@ -62,6 +62,8 @@ DE = {
     "Groesser": "Größer",
     "Schriftgroesse zuruecksetzen": "Schriftgröße zurücksetzen",
     "Naechster Treffer": "Nächster Treffer",
+    "DRM-geschuetzt - kann nicht gelesen oder umbenannt werden.":
+        "DRM-geschützt - kann nicht gelesen oder umbenannt werden.",
 }
 EN: dict[str, str] = {}
 

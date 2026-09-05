@@ -298,8 +298,10 @@ class MainWindow(QMainWindow):
             list_item.setData(Qt.UserRole, item)
             list_item.setData(SUBTITLE_ROLE, item.author_line)
             list_item.setData(STATUS_ROLE, item.status)
-            list_item.setToolTip(
-                f"{item.path}\n{STATUS_LABEL.get(item.status, item.status)}")
+            status_line = STATUS_LABEL.get(item.status, item.status)
+            if item.note:
+                status_line += f" - {item.note}"
+            list_item.setToolTip(f"{item.path}\n{status_line}")
             key = item.cover_url or item.path
             pm = self.loader.get(key) if key else None
             if pm and not pm.isNull():

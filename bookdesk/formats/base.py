@@ -76,6 +76,15 @@ def page_image(path: Path, index: int, max_width: int = 1400) -> bytes | None:
     return None
 
 
+def is_drm_protected(path: Path) -> bool:
+    """Nur fuer EPUB belegt - PDF-Passwortschutz ist ein eigenes,
+    selteneres Problem und wird hier (noch) nicht erkannt."""
+    if path.suffix.lower() in EPUB_EXTENSIONS:
+        from . import epub
+        return epub.is_drm_protected(path)
+    return False
+
+
 def find_pages(path: Path, query: str) -> list[int]:
     """Nur fuer PDF belegt - Seiten (0-basiert), auf denen `query` vorkommt."""
     if path.suffix.lower() in PDF_EXTENSIONS:

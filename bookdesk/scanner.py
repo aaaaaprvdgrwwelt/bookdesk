@@ -5,8 +5,9 @@ from pathlib import Path
 
 from PySide6.QtCore import QObject, QThread, Signal
 
-from .formats.base import BOOK_EXTENSIONS, read_metadata
-from .library import LibraryIndex
+from .formats.base import BOOK_EXTENSIONS, is_drm_protected, read_metadata
+from .i18n import _
+from .library import STATUS_ERROR, LibraryIndex
 from .parser import parse_filename
 
 
@@ -21,6 +22,28 @@ def find_books(root: Path) -> list[Path]:
         found.append(path)
     found.sort(key=lambda p: str(p).casefold())
     return found
+
+
+def _scan_one(path: Path, root: Path, library: LibraryIndex) -> None:
+    """Eine einzelne Datei einlesen - geteilt vom vollen und vom gezielten
+    Scan (siehe `scan_folder`)."""
+    meta = read_metadata(path)
+    title = meta.title
+    authors = meta.authors
+    if not title or not authors:
+        guess = parse_filename(path)
+        title = title or guess.title
+        authors = authors or ([guess.author] if guess.author else [])
+    library.mark_scanned(
+        path, root, title, authors, meta.series, meta.series_index,
+        meta.year, meta.language)
+    if is_drm_protected(path):
+        # Sonst liegt die Datei stillschweigend mit leeren/geratenen
+        # Metadaten in der Bibliothek, ohne dass ersichtlich ist, warum
+        # Titel/Autor fehlen bzw. warum sich die Datei nicht lesen laesst.
+        library.set_status(
+            path, STATUS_ERROR,
+            _("DRM-geschuetzt - kann nicht gelesen oder umbenannt werden."))
 
 
 class ScanWorker(QObject):
@@ -41,16 +64,7 @@ class ScanWorker(QObject):
             root_path = Path(root)
             found = find_books(root_path)
             for path in found:
-                meta = read_metadata(path)
-                title = meta.title
-                authors = meta.authors
-                if not title or not authors:
-                    guess = parse_filename(path)
-                    title = title or guess.title
-                    authors = authors or ([guess.author] if guess.author else [])
-                self.library.mark_scanned(
-                    path, root_path, title, authors, meta.series,
-                    meta.series_index, meta.year, meta.language)
+                _scan_one(path, root_path, self.library)
             self.library.forget_missing(root_path, {str(p) for p in found})
         self.finished.emit()
 
@@ -72,16 +86,7 @@ def scan_folder(folder: Path, root: Path, library: LibraryIndex) -> None:
     verglichen/aufgeraeumt."""
     found = find_books(folder)
     for path in found:
-        meta = read_metadata(path)
-        title = meta.title
-        authors = meta.authors
-        if not title or not authors:
-            guess = parse_filename(path)
-            title = title or guess.title
-            authors = authors or ([guess.author] if guess.author else [])
-        library.mark_scanned(
-            path, root, title, authors, meta.series, meta.series_index,
-            meta.year, meta.language)
+        _scan_one(path, root, library)
     library.forget_missing_under(folder, {str(p) for p in found})
 
 
