@@ -144,6 +144,22 @@ class LibraryIndex:
                 self._con.commit()
             return len(gone)
 
+    def forget_missing_under(self, folder: Path, existing: set[str]) -> int:
+        """Wie `forget_missing`, aber nur fuer Eintraege unterhalb `folder` -
+        fuer einen gezielten Scan nur eines einzelnen Buchs statt des ganzen
+        Wurzelordners."""
+        prefix = str(folder).rstrip("/") + "/"
+        with self._lock:
+            rows = self._con.execute(
+                "SELECT path FROM items WHERE path LIKE ? ESCAPE '\\'",
+                (prefix.replace("%", "\\%").replace("_", "\\_") + "%",)).fetchall()
+            gone = [r["path"] for r in rows if r["path"] not in existing]
+            if gone:
+                self._con.executemany(
+                    "DELETE FROM items WHERE path=?", [(p,) for p in gone])
+                self._con.commit()
+            return len(gone)
+
     def remove_path(self, path: Path) -> None:
         """Einzelnen Eintrag entfernen - nachdem seine Datei geloescht wurde."""
         with self._lock:

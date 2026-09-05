@@ -41,6 +41,17 @@ def test_forget_missing_removes_gone_files(tmp_path):
     assert remaining == ["A"]
 
 
+def test_forget_missing_under_only_touches_given_folder(tmp_path):
+    index = make_index(tmp_path)
+    root = Path("/books")
+    index.mark_scanned(root / "AuthorA" / "1.epub", root, title="A1")
+    index.mark_scanned(root / "AuthorB" / "1.epub", root, title="B1")
+    removed = index.forget_missing_under(root / "AuthorA", set())
+    assert removed == 1
+    remaining_titles = {i.title for i in index.list_books()}
+    assert remaining_titles == {"B1"}
+
+
 def test_remove_under_deletes_only_matching_prefix(tmp_path):
     index = make_index(tmp_path)
     root = Path("/books")
