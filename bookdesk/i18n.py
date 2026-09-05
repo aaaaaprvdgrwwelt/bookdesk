@@ -53,6 +53,8 @@ DE = {
         "{n} Änderung(en) geplant, {u} bereits korrekt benannt.",
     "Titel enthielt einen Schraegstrich - wurde durch \" - \" ersetzt.":
         "Titel enthielt einen Schrägstrich - wurde durch \" - \" ersetzt.",
+    "Treffer waehlen": "Treffer wählen",
+    "von Hand gewaehlt": "von Hand gewählt",
 }
 EN: dict[str, str] = {}
 

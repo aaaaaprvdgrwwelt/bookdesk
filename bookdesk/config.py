@@ -9,13 +9,15 @@ from PySide6.QtCore import QSettings
 from deskkit.settings import as_bool as _bool
 
 from .i18n import system_language
+from .matcher import DEFAULT_THRESHOLD, MatchConfig
+from .providers.base import MetadataProvider
+from .providers.openlibrary import OpenLibraryProvider
 
 #: OpenLibrary erwartet keinen speziellen Sprachcode, die Oberflaechensprache
 #: reicht als Sprachfilter fuer die Beschreibung.
 _OL_LANGUAGE = {"de": "de", "en": "en"}
 
 RENAME_TEMPLATE_DEFAULT = "{author}/{series} #{series_index} - {title}{ext}"
-DEFAULT_THRESHOLD = 70
 
 
 @dataclass
@@ -54,3 +56,12 @@ class Settings:
     def ol_language(self) -> str:
         code = system_language() if self.language == "auto" else self.language
         return _OL_LANGUAGE.get(code, "en")
+
+    def build_providers(self) -> list[MetadataProvider]:
+        providers: list[MetadataProvider] = []
+        if self.use_openlibrary:
+            providers.append(OpenLibraryProvider())
+        return providers
+
+    def build_config(self) -> MatchConfig:
+        return MatchConfig(threshold=self.threshold, providers=self.build_providers())
