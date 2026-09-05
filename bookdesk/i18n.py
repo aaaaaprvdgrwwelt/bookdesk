@@ -59,6 +59,9 @@ DE = {
     "nicht unterstuetzt und dabei nicht geschrieben.":
         "Das ändert die Originaldatei. Serieninformation wird bei PDF "
         "nicht unterstützt und dabei nicht geschrieben.",
+    "Groesser": "Größer",
+    "Schriftgroesse zuruecksetzen": "Schriftgröße zurücksetzen",
+    "Naechster Treffer": "Nächster Treffer",
 }
 EN: dict[str, str] = {}
 

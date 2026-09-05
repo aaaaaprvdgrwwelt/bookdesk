@@ -76,6 +76,14 @@ def page_image(path: Path, index: int, max_width: int = 1400) -> bytes | None:
     return None
 
 
+def find_pages(path: Path, query: str) -> list[int]:
+    """Nur fuer PDF belegt - Seiten (0-basiert), auf denen `query` vorkommt."""
+    if path.suffix.lower() in PDF_EXTENSIONS:
+        from . import pdf
+        return pdf.find_pages(path, query)
+    return []
+
+
 def can_write(path: Path) -> bool:
     return path.suffix.lower() in BOOK_EXTENSIONS
 

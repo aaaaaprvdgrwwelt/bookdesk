@@ -85,6 +85,24 @@ def write_metadata(path: Path, meta: BookMeta) -> None:
         doc.close()
 
 
+def find_pages(path: Path, query: str) -> list[int]:
+    """Seiten (0-basiert), auf denen `query` vorkommt - fuer die
+    Buchsuche im Reader. Kein Textmarkierungs-Overlay, nur Sprung zur
+    Seite; PyMuPDFs Textsuche ist ohnehin nicht case-sensitiv genug fuer
+    mehr."""
+    query = query.strip()
+    if not query:
+        return []
+    doc = _open(path)
+    if doc is None:
+        return []
+    try:
+        return [i for i in range(doc.page_count)
+                if doc.load_page(i).search_for(query, quads=False)]
+    finally:
+        doc.close()
+
+
 def page_image(path: Path, index: int, max_width: int = 1400) -> bytes | None:
     doc = _open(path)
     if doc is None or not (0 <= index < doc.page_count):
