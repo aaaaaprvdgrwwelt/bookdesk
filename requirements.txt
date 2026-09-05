@@ -1,0 +1,6 @@
+-e ../deskkit
+PySide6
+ebooklib
+pymupdf
+requests
+send2trash

@@ -1,0 +1,1 @@
+"""BookDesk - Dateimanager fuer Ebooks."""

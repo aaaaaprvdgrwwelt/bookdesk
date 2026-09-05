@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bookdesk"
+version = "0.1.0"
+description = "Ein Dateimanager nur fuer Ebooks (EPUB, PDF): sichten, lesen, Metadaten holen, umbenennen"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = [
+    # Gemeinsames Grundgeruest mit den anderen *desk-Apps (siehe
+    # ../deskkit) - noch kein eigenes Repo/PyPI-Paket, deshalb per
+    # `pip install -r requirements.txt` (editable) statt hier direkt
+    # aufloesbar.
+    "deskkit",
+    "PySide6>=6.6",
+    "ebooklib>=0.18",
+    "pymupdf>=1.23",
+    "requests>=2.31",
+    "send2trash>=1.8",
+]
+
+[project.urls]
+Homepage = "https://github.com/aaaaaprvdgrwwelt/bookdesk"
+
+[project.scripts]
+bookdesk = "bookdesk.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["bookdesk*"]
