@@ -45,8 +45,14 @@ DE = {
     "Datei nicht gefunden - eventuell verschoben oder geloescht.":
         "Datei nicht gefunden - eventuell verschoben oder gelöscht.",
     "Nicht alles konnte geloescht werden:": "Nicht alles konnte gelöscht werden:",
-    "Fehlende Buecher aktualisieren": "Fehlende Bücher aktualisieren",
-    "Automatisch taggen": "Automatisch taggen",
+    "Alle Buecher": "Alle Bücher",
+    "Aktiv (kein API-Key noetig)": "Aktiv (kein API-Key nötig)",
+    "Schwellwert fuer automatische Zuordnung":
+        "Schwellwert für automatische Zuordnung",
+    "{n} Aenderung(en) geplant, {u} bereits korrekt benannt.":
+        "{n} Änderung(en) geplant, {u} bereits korrekt benannt.",
+    "Titel enthielt einen Schraegstrich - wurde durch \" - \" ersetzt.":
+        "Titel enthielt einen Schrägstrich - wurde durch \" - \" ersetzt.",
 }
 EN: dict[str, str] = {}
 
