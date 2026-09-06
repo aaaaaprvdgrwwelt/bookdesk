@@ -29,7 +29,7 @@ class Settings:
     language: str = "auto"
 
     @classmethod
-    def load(cls, settings: QSettings) -> "Settings":
+    def load(cls, settings: QSettings) -> Settings:
         settings.beginGroup("bookdesk")
         obj = cls(
             book_roots=json.loads(settings.value("book_roots", "[]") or "[]"),
