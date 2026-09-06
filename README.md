@@ -142,6 +142,14 @@ Serien-weite Variante: Bücher gruppieren sich nach Metadaten
 
 Verschiebt Dateien in den Papierkorb, nichts wird endgültig gelöscht.
 
+## Bibliothek sichern
+
+`Datei → Bibliothek sichern …` kopiert die Datenbank mit allen Zuordnungen
+an einen selbst gewählten Ort (über SQLites Online-Backup-API, sicher auch
+während die App läuft). Sie ist die einzige Quelle der Wahrheit für
+Zuordnungen; ohne Sicherung wäre ein Datenverlust nicht rückgängig zu
+machen.
+
 ## Bedienung
 
 | Kürzel | Aktion |

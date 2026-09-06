@@ -60,6 +60,13 @@ unauffaellig in der Bibliothek zu fuehren.</p>
 <h2>Loeschen</h2>
 <p>Verschiebt Dateien in den Papierkorb, nichts wird endgueltig geloescht.</p>
 
+<h2>Bibliothek sichern</h2>
+<p><b>Datei &rarr; Bibliothek sichern …</b> kopiert die Datenbank mit allen
+Zuordnungen an einen selbst gewaehlten Ort - sie ist die einzige Quelle der
+Wahrheit dafuer, ein Datenverlust liesse sich sonst nicht rueckgaengig
+machen. Die Sicherung laesst sich bei Bedarf einfach zurueckkopieren (App
+vorher schliessen) - dafuer gibt es keinen eigenen Knopf.</p>
+
 <h2>Wo Daten liegen</h2>
 <table cellpadding="4">
 <tr><td>Einstellungen</td><td><code>~/.config/bookdesk/bookdesk.conf</code></td></tr>

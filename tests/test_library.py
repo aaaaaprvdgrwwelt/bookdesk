@@ -17,6 +17,17 @@ def test_mark_scanned_inserts_new_item(tmp_path):
     assert items[0].authors == ["J.R.R. Tolkien"]
 
 
+def test_backup_to_copies_all_items(tmp_path):
+    index = make_index(tmp_path)
+    index.mark_scanned(Path("/books/Test.epub"), Path("/books"), title="Test")
+    destination = tmp_path / "backup" / "copy.sqlite"
+    index.backup_to(destination)
+    assert destination.exists()
+
+    restored = LibraryIndex(destination)
+    assert [b.title for b in restored.list_books()] == ["Test"]
+
+
 def test_mark_scanned_keeps_existing_match_on_rescan(tmp_path):
     index = make_index(tmp_path)
     path = Path("/books/Hobbit.epub")
