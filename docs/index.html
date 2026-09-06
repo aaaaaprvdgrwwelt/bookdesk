@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BookDesk – ein Dateimanager nur für Ebooks</title>
+<meta name="description" content="Ein Dateimanager, der nur Ebooks kennt: sichten, lesen, Metadaten holen, umbenennen. EPUB und PDF, Python + Qt, Linux/Windows/macOS, Deutsch und Englisch.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta property="og:title" content="BookDesk">
+<meta property="og:description" content="Ein Dateimanager, der nur Ebooks kennt: sichten, lesen, Metadaten holen, umbenennen.">
+<meta property="og:type" content="website">
+<style>
+:root {
+  --bg: #faf8f4; --fg: #2a2318; --muted: #6b6152; --line: #e6ddcc;
+  --card: #ffffff; --accent: #7a5a34; --accent-fg: #ffffff;
+  --code-bg: #f2ece0; --shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #18140e; --fg: #ece5d6; --muted: #ab9f88; --line: #322a1e;
+    --card: #211b13; --accent: #d0ab6f; --accent-fg: #1a1610;
+    --code-bg: #2a2318; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #18140e; --fg: #ece5d6; --muted: #ab9f88; --line: #322a1e;
+  --card: #211b13; --accent: #d0ab6f; --accent-fg: #1a1610;
+  --code-bg: #2a2318; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+}
+:root[data-theme="light"] {
+  --bg: #faf8f4; --fg: #2a2318; --muted: #6b6152; --line: #e6ddcc;
+  --card: #ffffff; --accent: #7a5a34; --accent-fg: #ffffff;
+  --code-bg: #f2ece0; --shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.05);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+}
+.wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+a { color: var(--accent); }
+
+header { padding: 72px 0 56px; border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.brand svg { width: 84px; height: 84px; flex: none; border-radius: 19px; box-shadow: var(--shadow); }
+h1 { margin: 0; font-size: clamp(2rem, 6vw, 2.9rem); letter-spacing: -.02em; }
+.tagline { margin: 18px 0 0; font-size: 1.2rem; color: var(--muted); max-width: 34em; }
+.buttons { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
+.btn {
+  display: inline-block; padding: 11px 20px; border-radius: 9px;
+  text-decoration: none; font-weight: 600; font-size: .96rem;
+  border: 1px solid var(--line); color: var(--fg); background: var(--card);
+}
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+
+section { padding: 52px 0; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: 0; }
+h2 { font-size: 1.5rem; margin: 0 0 8px; letter-spacing: -.01em; }
+h2 + .sub { margin: 0 0 28px; color: var(--muted); }
+h3 { font-size: 1.05rem; margin: 0 0 6px; }
+
+.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 12px; padding: 20px; box-shadow: var(--shadow);
+}
+.card p { margin: 0; color: var(--muted); font-size: .93rem; }
+
+pre {
+  background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
+  padding: 16px 18px; overflow-x: auto; font-size: .88rem; line-height: 1.6;
+}
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+p code, li code, td code { background: var(--code-bg); padding: .12em .38em; border-radius: 4px; font-size: .89em; }
+
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: 9px 14px 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; white-space: nowrap; }
+
+.note {
+  background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0; padding: 16px 20px; margin: 26px 0 0;
+  font-size: .93rem; color: var(--muted);
+}
+.note strong { color: var(--fg); }
+
+footer { padding: 40px 0 60px; color: var(--muted); font-size: .9rem; }
+footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="BookDesk-Symbol">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#3a2c1c"/><stop offset="1" stop-color="#7a5a34"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="512" height="512" rx="114" fill="url(#bg)"/>
+        <g transform="translate(51.2,51.2) scale(6.4)">
+          <path d="M6 14 C16 10 24 10 32 16 V54 C24 48 16 48 6 52 Z" fill="#f2f2f2"/>
+          <path d="M58 14 C48 10 40 10 32 16 V54 C40 48 48 48 58 52 Z" fill="#d8c8a8"/>
+          <path d="M10 24 C18 20 24 20 30 25" stroke="#7a5a34" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M10 34 C18 30 24 30 30 35" stroke="#7a5a34" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M34 25 C40 20 46 20 54 24" stroke="#a08858" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M34 35 C40 30 46 30 54 34" stroke="#a08858" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <rect x="44" y="6" width="8" height="20" fill="#e0a83c"/>
+          <path d="M44 26 L48 20 L52 26 Z" fill="#e0a83c"/>
+        </g>
+      </svg>
+      <h1>BookDesk</h1>
+    </div>
+
+    <p class="tagline">
+      Ein Dateimanager, der nur Ebooks kennt: sichten, lesen, Metadaten holen,
+      umbenennen, löschen. EPUB kapitelweise, PDF seitenweise, in einem Fenster.
+    </p>
+
+    <div class="buttons">
+      <a class="btn primary" href="https://github.com/aaaaaprvdgrwwelt/bookdesk">Auf GitHub ansehen</a>
+      <a class="btn" href="#installation">Installation</a>
+      <a class="btn" href="#formate">Formate</a>
+    </div>
+
+    <div class="note">
+      <strong>Status: nutzbar.</strong> Entwickelt und getestet unter Linux.
+      Windows und macOS sollten laufen (reines Qt/Python), sind aber nicht
+      manuell getestet — die automatisierte Testsuite läuft dort in der CI.
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Was es kann</h2>
+    <p class="sub">Oberfläche auf Deutsch und Englisch, umschaltbar im laufenden Betrieb.</p>
+    <div class="cards">
+      <div class="card">
+        <h3>Lesen</h3>
+        <p>Ein Fenster für beide Formate: EPUB kapitelweise als Text, PDF seitenweise
+           als gerenderte Seite. Zoom für beide (Schriftgröße bzw. Renderauflösung),
+           Volltextsuche über alle Kapitel bzw. Seiten. Letzte Position wird gemerkt.</p>
+      </div>
+      <div class="card">
+        <h3>Metadaten aus der Datei</h3>
+        <p>Titel, Autor, Serie und Cover kommen zuerst aus EPUB-OPF-Daten bzw.
+           PDF-Dokumenteigenschaften — nicht aus einer externen Vermutung.</p>
+      </div>
+      <div class="card">
+        <h3>Automatisch zuordnen</h3>
+        <p>Ergänzt fehlende Angaben über OpenLibrary, kostenlos und ohne Key.
+           Unsichere Treffer bleiben markiert statt falsch übernommen zu werden.</p>
+      </div>
+      <div class="card">
+        <h3>DRM erkennen</h3>
+        <p>Adobe-ADEPT- oder LCP-geschützte EPUBs werden klar als Fehler markiert,
+           statt mit leerem Titel unauffällig in der Bibliothek zu landen.</p>
+      </div>
+      <div class="card">
+        <h3>Sicheres Zurückschreiben</h3>
+        <p>Nur auf Wunsch, nie automatisch. EPUB: temporäre Kopie, ZIP-Integritätscheck,
+           erst dann atomarer Austausch — ein Fehler mittendrin beschädigt nie das Original.</p>
+      </div>
+      <div class="card">
+        <h3>Umbenennen nach Vorlage</h3>
+        <p>Vorschau vor jeder Änderung. Eigene Vorlage mit Autor, Serie, Titel, Jahr.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="installation">
+  <div class="wrap">
+    <h2>Installation</h2>
+    <p class="sub">Fertige Pakete für Windows/macOS unter
+      <a href="https://github.com/aaaaaprvdgrwwelt/bookdesk/releases">Releases</a> —
+      unsigniert, deshalb beim ersten Start je einmal „Trotzdem ausführen“ (Windows)
+      bzw. Rechtsklick → Öffnen (macOS) bestätigen. Aus dem Quelltext (Linux und alle
+      anderen) reicht Python 3.10 oder neuer:</p>
+<pre><code>git clone https://github.com/aaaaaprvdgrwwelt/deskkit.git
+git clone https://github.com/aaaaaprvdgrwwelt/bookdesk.git
+cd bookdesk
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt</code></pre>
+    <h3 style="margin-top:28px">Starten</h3>
+<pre><code>./bookdesk.sh              # oder: .venv/bin/python -m bookdesk
+./install-desktop.sh       # Eintrag im Anwendungsmenü anlegen (Linux)</code></pre>
+  </div>
+</section>
+
+<section id="formate">
+  <div class="wrap">
+    <h2>Formate</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Format</th><th>Lesen</th><th>Metadaten</th><th>Zurückschreiben</th></tr></thead>
+        <tbody>
+          <tr><td>EPUB</td><td>ja, kapitelweise</td><td>OPF, inkl. Calibre-Serieninfo</td><td>ja — nur die OPF-Datei wird ersetzt</td></tr>
+          <tr><td>PDF</td><td>ja, seitenweise (PyMuPDF)</td><td>Dokumenteigenschaften</td><td>ja — inkrementell, kein Neuschreiben</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <strong>Volltextsuche über das ganze Buch, nicht nur die Seite.</strong>
+      Bei EPUB wird zunächst im aktuellen Kapitel gesucht, ohne Treffer der Reihe
+      nach durch die übrigen — mit Umlauf am Buchende. Bei PDF läuft die Suche über
+      PyMuPDFs eigene Textsuche und springt zur nächsten Seite mit Treffer.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Bedienung</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Kürzel</th><th>Aktion</th></tr></thead>
+        <tbody>
+          <tr><td><code>F5</code></td><td>Scannen</td></tr>
+          <tr><td><code>Strg+T</code></td><td>Automatisch zuordnen</td></tr>
+          <tr><td><code>Enter</code></td><td>Lesen</td></tr>
+          <tr><td><code>Strg+R</code></td><td>Umbenennen …</td></tr>
+          <tr><td><code>Strg+S</code></td><td>Metadaten in Datei speichern …</td></tr>
+          <tr><td><code>Strg++</code> / <code>Strg+-</code> / <code>Strg+0</code></td><td>Zoom im Reader</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>
+      MIT-Lizenz ·
+      <a href="https://github.com/aaaaaprvdgrwwelt/bookdesk">Quellcode</a> ·
+      <a href="https://github.com/aaaaaprvdgrwwelt/bookdesk/blob/main/README.md">Vollständige Dokumentation</a> ·
+      <a href="https://github.com/aaaaaprvdgrwwelt/bookdesk/issues">Fehler melden</a>
+    </p>
+    <p>Teil der <code>*desk</code>-Familie:
+       <a href="https://aaaaaprvdgrwwelt.github.io/comicdesk/">ComicDesk</a> ·
+       <a href="https://aaaaaprvdgrwwelt.github.io/moviedesk/">MovieDesk</a> ·
+       <a href="https://aaaaaprvdgrwwelt.github.io/audiodesk/">AudioDesk</a>.
+       Metadaten von <a href="https://openlibrary.org">OpenLibrary</a> (CC0).</p>
+  </div>
+</footer>
+
+</body>
+</html>
