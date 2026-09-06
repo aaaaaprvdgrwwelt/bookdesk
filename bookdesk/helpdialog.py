@@ -34,6 +34,24 @@ Datei (inkl. Calibre-Serieninformation, falls vorhanden).</p>
 eigenschaften (Titel/Autor, falls gesetzt) - PDFs haben in der Regel keine
 Serieninformation.</p>
 
+<h2>Im Reader: Zoom und Suche</h2>
+<p><b>Zoom</b> - <code>Strg++</code>/<code>Strg+-</code>/<code>Strg+0</code>
+(oder die A+/A-/100&nbsp;%-Knoepfe). Bei EPUB aendert das die
+Schriftgroesse, bei PDF die Renderaufloesung (50-250&nbsp;%).</p>
+<p><b>Suche</b> - Eingabe im Suchfeld + <code>Enter</code>/&#9664;/&#9654;.
+Bei EPUB wird zunaechst im aktuellen Kapitel gesucht, ohne Treffer der
+Reihe nach durch die uebrigen Kapitel (mit Umlauf am Buchanfang/-ende).
+Bei PDF laeuft die Suche ueber PyMuPDFs eigene Textsuche und springt zur
+naechsten/vorherigen Seite mit Treffer - ohne Textmarkierung auf der Seite
+selbst, nur der Sprung zur Fundstelle.</p>
+
+<h2>DRM-geschuetzte EPUBs</h2>
+<p>EPUBs mit Adobe-ADEPT- oder LCP-Verschluesselung lassen sich nicht
+lesen. bookdesk erkennt das am <code>META-INF/encryption.xml</code>-Eintrag
+im Archiv und markiert die Datei beim Scannen als <b>Fehler</b> mit dem
+Hinweis "DRM-geschuetzt", statt sie mit leerem oder geratenem Titel
+unauffaellig in der Bibliothek zu fuehren.</p>
+
 <h2>Umbenennen-Vorlage</h2>
 <p>Unter <b>Einstellungen &rarr; Umbenennen</b> frei einstellbar. Platzhalter:
 <code>{author} {series} {series_index} {title} {year} {ext}</code>. Ein
