@@ -43,6 +43,15 @@ katalogisiert sind), Titel, Autor(en), Serie, Band, Jahr, Beschreibung
 und Cover-URL direkt selbst eintippen. Uebernehmen setzt den Status auf
 <i>zugeordnet</i>, mit dem Hinweis "von Hand eingetragen".</p>
 
+<h2>Cover dauerhaft speichern</h2>
+<p>Per Vorgabe landet ein zugeordnetes Cover nur im fluechtigen Thumbnail-
+Cache - beim Leeren des Caches wuerde es erneut heruntergeladen. Unter
+<i>Einstellungen &rarr; Bibliothek &rarr; Cover dauerhaft speichern</i>
+laesst sich das umstellen: <b>neben der Buchdatei</b> (gleicher Name,
+<code>.jpg</code>) oder <b>in einem eigenen Ordner</b> (frei waehlbar).
+Das Herunterladen passiert automatisch beim Zuordnen, egal ob automatisch
+oder von Hand.</p>
+
 <h2>Unterstuetzte Formate</h2>
 <p><b>EPUB</b>: Kapitelweiser Reader, Metadaten aus der eingebetteten OPF-
 Datei (inkl. Calibre-Serieninformation, falls vorhanden).</p>

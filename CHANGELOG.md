@@ -7,6 +7,11 @@ Noch kein Release getaggt — alles bislang unter „Unreleased“.
 
 ### Added
 
+- Cover dauerhaft speichern (`coverstore.py`), statt nur im flüchtigen
+  Thumbnail-Cache: unter *Einstellungen → Bibliothek* wählbar zwischen
+  „nicht speichern“ (Vorgabe), „neben der Buchdatei“ (gleicher Name,
+  `.jpg`) und „in einem eigenen Ordner“. Lädt automatisch beim Zuordnen
+  herunter, egal ob automatisch oder von Hand.
 - „Manuell zuordnen“: neuer Reiter **Von Hand eintragen** im Dialog —
   Titel, Autor(en), Serie, Band, Jahr, Beschreibung und Cover-URL direkt
   selbst eintippen, für den Fall, dass auch keine Online-Quelle etwas

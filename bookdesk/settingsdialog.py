@@ -2,14 +2,15 @@
 from __future__ import annotations
 
 from PySide6.QtWidgets import (
-    QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFormLayout,
-    QGroupBox, QHBoxLayout, QLabel, QLineEdit,
+    QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog, QFormLayout,
+    QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPushButton,
     QSlider, QTabWidget, QVBoxLayout, QWidget,
 )
 from PySide6.QtCore import Qt
 
 from deskkit.widgets import RootList
 
+from . import coverstore
 from .config import Settings
 from .i18n import LANGUAGES, _
 
@@ -41,8 +42,54 @@ class SettingsDialog(QDialog):
         layout = QVBoxLayout(widget)
         layout.addWidget(QLabel(_("Ebook-Ordner")))
         self.book_roots = RootList(settings.book_roots, _)
-        layout.addWidget(self.book_roots)
+        layout.addWidget(self.book_roots, 1)
+
+        cover_box = QGroupBox(_("Cover dauerhaft speichern"))
+        cover_form = QFormLayout(cover_box)
+        self.cover_storage = QComboBox()
+        self.cover_storage.addItem(
+            _("Nicht speichern (nur fluechtiger Cache)"), coverstore.STORAGE_NONE)
+        self.cover_storage.addItem(
+            _("Neben der Buchdatei (gleicher Name, .jpg)"),
+            coverstore.STORAGE_NEXT_TO_BOOK)
+        self.cover_storage.addItem(
+            _("In einem eigenen Ordner"), coverstore.STORAGE_DIRECTORY)
+        index = self.cover_storage.findData(settings.cover_storage)
+        if index >= 0:
+            self.cover_storage.setCurrentIndex(index)
+        cover_form.addRow(self.cover_storage)
+
+        self.cover_directory = QLineEdit(settings.cover_directory)
+        browse_button = QPushButton(_("Durchsuchen …"))
+        browse_button.clicked.connect(self._pick_cover_directory)
+        dir_row = QHBoxLayout()
+        dir_row.addWidget(self.cover_directory, 1)
+        dir_row.addWidget(browse_button)
+        cover_form.addRow(_("Ordner"), dir_row)
+
+        cover_hint = QLabel(_(
+            "Wird beim Zuordnen automatisch heruntergeladen und dauerhaft "
+            "gespeichert - unabhaengig vom fluechtigen Thumbnail-Cache, "
+            "der beim Leeren erneut aus dem Netz laden wuerde."))
+        cover_hint.setWordWrap(True)
+        cover_form.addRow(cover_hint)
+
+        self._update_cover_directory_enabled()
+        self.cover_storage.currentIndexChanged.connect(
+            self._update_cover_directory_enabled)
+
+        layout.addWidget(cover_box)
         return widget
+
+    def _update_cover_directory_enabled(self) -> None:
+        enabled = self.cover_storage.currentData() == coverstore.STORAGE_DIRECTORY
+        self.cover_directory.setEnabled(enabled)
+
+    def _pick_cover_directory(self) -> None:
+        directory = QFileDialog.getExistingDirectory(
+            self, _("Ordner fuer Cover waehlen"), self.cover_directory.text())
+        if directory:
+            self.cover_directory.setText(directory)
 
     def _sources_tab(self, settings: Settings) -> QWidget:
         widget = QWidget()
@@ -113,5 +160,7 @@ class SettingsDialog(QDialog):
             threshold=self.threshold.value(),
             rename_template=self.rename_template.text().strip(),
             language=self.language.currentData(),
+            cover_storage=self.cover_storage.currentData(),
+            cover_directory=self.cover_directory.text().strip(),
         )
         self.accept()

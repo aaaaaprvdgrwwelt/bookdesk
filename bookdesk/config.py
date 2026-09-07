@@ -8,6 +8,7 @@ from PySide6.QtCore import QSettings
 
 from deskkit.settings import as_bool as _bool
 
+from . import coverstore
 from .i18n import system_language
 from .matcher import DEFAULT_THRESHOLD, MatchConfig
 from .providers.base import MetadataProvider
@@ -29,6 +30,8 @@ class Settings:
     threshold: int = DEFAULT_THRESHOLD
     rename_template: str = RENAME_TEMPLATE_DEFAULT
     language: str = "auto"
+    cover_storage: str = coverstore.STORAGE_NONE
+    cover_directory: str = ""
 
     @classmethod
     def load(cls, settings: QSettings) -> Settings:
@@ -42,6 +45,9 @@ class Settings:
                 "rename_template", RENAME_TEMPLATE_DEFAULT)
             or RENAME_TEMPLATE_DEFAULT,
             language=settings.value("language", "auto") or "auto",
+            cover_storage=settings.value("cover_storage", coverstore.STORAGE_NONE)
+            or coverstore.STORAGE_NONE,
+            cover_directory=settings.value("cover_directory", "") or "",
         )
         settings.endGroup()
         return obj
@@ -69,4 +75,6 @@ class Settings:
         return providers
 
     def build_config(self) -> MatchConfig:
-        return MatchConfig(threshold=self.threshold, providers=self.build_providers())
+        return MatchConfig(
+            threshold=self.threshold, providers=self.build_providers(),
+            cover_storage=self.cover_storage, cover_directory=self.cover_directory)

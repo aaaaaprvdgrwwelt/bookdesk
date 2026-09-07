@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout, QWidget,
 )
 
+from . import coverstore
 from .i18n import _
 from .library import Item, LibraryIndex, STATUS_MATCHED
 from .matcher import MatchConfig, collect_candidates
@@ -152,6 +153,18 @@ class MatchDialog(QDialog):
         else:
             self._apply_search()
 
+    def _save_cover(self, title: str, cover_url: str | None) -> None:
+        """Wie matcher.AutoMatchWorker.run(): Cover nur schreiben, wenn der
+        Nutzer das unter Einstellungen -> Bibliothek so eingestellt hat
+        (siehe coverstore.py)."""
+        if not cover_url:
+            return
+        saved = coverstore.save_cover(
+            self.item.id, title, Path(self.item.path), cover_url,
+            self.config.cover_storage, self.config.cover_directory)
+        if saved:
+            self.library.set_cover_path(Path(self.item.path), str(saved))
+
     def _apply_search(self) -> None:
         items = self.results.selectedItems()
         if not items:
@@ -168,6 +181,7 @@ class MatchDialog(QDialog):
             self.item.series_index, info.year, info.description, info.cover_url,
             info.source, info.external_id, 100, STATUS_MATCHED,
             _("von Hand gewaehlt"))
+        self._save_cover(info.title, info.cover_url)
         self.accept()
 
     def _apply_manual(self) -> None:
@@ -175,11 +189,12 @@ class MatchDialog(QDialog):
         if not title:
             return
         authors = [a.strip() for a in self.manual_authors.text().split(",") if a.strip()]
+        cover_url = self.manual_cover_url.text().strip() or None
         self.library.set_match(
             Path(self.item.path), title, authors,
             self.manual_series.text().strip(),
             self.manual_series_index.text().strip(), self._manual_year(),
-            self.manual_description.toPlainText().strip(),
-            self.manual_cover_url.text().strip() or None,
+            self.manual_description.toPlainText().strip(), cover_url,
             "", "", 100, STATUS_MATCHED, _("von Hand eingetragen"))
+        self._save_cover(title, cover_url)
         self.accept()

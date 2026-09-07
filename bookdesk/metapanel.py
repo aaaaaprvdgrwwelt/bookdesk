@@ -104,7 +104,7 @@ class MetaPanel(QWidget):
         self.path_label.setText(item.path)
         self.path_label.setToolTip(item.path)
 
-        self._key = item.cover_url or item.path
+        self._key = item.cover_path or item.cover_url or item.path
         pm = self._loader.get(self._key)
         self._apply_cover(pm)
 

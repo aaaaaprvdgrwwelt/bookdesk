@@ -307,7 +307,7 @@ class MainWindow(QMainWindow):
             if item.note:
                 status_line += f" - {item.note}"
             list_item.setToolTip(f"{item.path}\n{status_line}")
-            key = item.cover_url or item.path
+            key = item.cover_path or item.cover_url or item.path
             pm = self.loader.get(key) if key else None
             if pm and not pm.isNull():
                 list_item.setIcon(QIcon(pm))

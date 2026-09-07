@@ -127,6 +127,24 @@ Die Metadaten werden nicht automatisch in die Ebook-Datei
 zurückgeschrieben — dafür gibt es **Metadaten in Datei speichern …**
 (`Strg+S`), ausdrücklich auf Wunsch.
 
+## Cover dauerhaft speichern
+
+Per Vorgabe landet ein zugeordnetes Cover nur im flüchtigen Thumbnail-
+Cache (`~/.cache/bookdesk/covers`) — beim Leeren des Caches würde es
+erneut heruntergeladen. Unter *Einstellungen → Bibliothek → Cover
+dauerhaft speichern* lässt sich das umstellen:
+
+* **Nicht speichern** (Vorgabe) — nur der flüchtige Cache.
+* **Neben der Buchdatei** — `Band 1.epub` bekommt ein `Band 1.jpg` direkt
+  daneben.
+* **In einem eigenen Ordner** — ein frei wählbarer Ordner, Dateiname aus
+  Datenbank-ID und Titel (`42-Die letzte Chance.jpg`), damit zwei Bücher
+  mit zufällig gleichem Titel sich nicht gegenseitig überschreiben.
+
+Das Herunterladen passiert automatisch beim Zuordnen (automatisch wie von
+Hand) — schlägt der Download fehl, bleibt es beim flüchtigen Cache, ohne
+den Abgleich abzubrechen.
+
 ## Formate
 
 | Format | Lesen | Metadaten | Zurückschreiben |

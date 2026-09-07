@@ -9,6 +9,7 @@ from PySide6.QtCore import QObject, QThread, Signal
 
 from deskkit.matching import title_similarity
 
+from . import coverstore
 from .i18n import _
 from .library import LibraryIndex, STATUS_ERROR, STATUS_MATCHED, STATUS_UNSURE
 from .providers.base import (
@@ -22,6 +23,8 @@ DEFAULT_THRESHOLD = 70
 class MatchConfig:
     threshold: int = DEFAULT_THRESHOLD
     providers: list[MetadataProvider] = field(default_factory=list)
+    cover_storage: str = coverstore.STORAGE_NONE
+    cover_directory: str = ""
 
 
 def score_candidate(query: SearchQuery, candidate: Candidate) -> int:
@@ -105,6 +108,12 @@ class AutoMatchWorker(QObject):
                 path, info.title, info.authors, item.series, item.series_index,
                 info.year, info.description, info.cover_url, info.source,
                 info.external_id, score, status)
+            if info.cover_url:
+                saved = coverstore.save_cover(
+                    item.id, info.title, path, info.cover_url,
+                    self.config.cover_storage, self.config.cover_directory)
+                if saved:
+                    self.library.set_cover_path(path, str(saved))
         self.finished.emit()
 
 

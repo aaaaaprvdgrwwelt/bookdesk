@@ -14,6 +14,10 @@ from deskkit.thumbs import ThumbLoader as _ThumbLoader
 from .formats.base import cover_bytes
 
 THUMB_SIZE = 220
+#: Dauerhaft gespeicherte Cover (siehe coverstore.py) sind einfache
+#: Bilddateien, kein Ebook mit eingebettetem Cover - formats.cover_bytes()
+#: wuerde dafuer nichts liefern, deshalb hier direkt gelesen.
+_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
 
 def cache_dir() -> Path:
@@ -43,13 +47,20 @@ def _raw_bytes(key: str) -> bytes | None:
             return response.content
         except Exception:  # noqa: BLE001
             return None
-    return cover_bytes(Path(key))
+    path = Path(key)
+    if path.suffix.lower() in _IMAGE_EXTENSIONS:
+        try:
+            return path.read_bytes()
+        except OSError:
+            return None
+    return cover_bytes(path)
 
 
 def _load(key: str) -> QImage:
-    """`key` ist entweder ein lokaler Dateipfad (eingebettetes Cover wird
-    extrahiert) oder eine http(s)-URL (Cover einer Online-Quelle,
-    z. B. nach dem Zuordnen ueber OpenLibrary)."""
+    """`key` ist ein lokaler Dateipfad (dauerhaft gespeichertes Cover -
+    siehe coverstore.py - oder eingebettetes Cover, wird aus der Ebook-
+    Datei extrahiert), eine http(s)-URL (Cover einer Online-Quelle vor dem
+    dauerhaften Speichern) oder der Pfad der Ebook-Datei selbst."""
     img = QImage()
     cache = _cache_path(key)
     if cache.exists():
