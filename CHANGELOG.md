@@ -7,6 +7,14 @@ Noch kein Release getaggt — alles bislang unter „Unreleased“.
 
 ### Added
 
+- MOBI/AZW3/AZW-Unterstützung (nur lesend): sichten, lesen, Metadaten
+  automatisch abgleichen. Titel mit KF8-Anteil (praktisch alle AZW3 und
+  neueren MOBI-Titel) werden intern zu einem gleichwertigen EPUB entpackt
+  und wie EPUB kapitelweise gelesen; ältere reine MOBI7-Titel ohne
+  KF8-Anteil landen als ein durchgehendes „Kapitel“ im Reader.
+  Verschlüsselte (DRM-geschützte) Dateien werden erkannt und nicht
+  entpackt. Zurückschreiben (`Strg+S`) bleibt EPUB/PDF vorbehalten — das
+  Binärformat lässt sich nicht sicher inkrementell patchen.
 - EPUB- und PDF-Unterstützung: sichten, lesen (kapitel- bzw. seitenweise),
   umbenennen, löschen.
 - Metadaten-Abgleich gegen OpenLibrary (kostenlos, kein API-Key).
@@ -31,5 +39,12 @@ Noch kein Release getaggt — alles bislang unter „Unreleased“.
 - Gemeinsame Bausteine (Kachel-Delegate, Ordnerliste) nach
   [deskkit](https://github.com/aaaaaprvdgrwwelt/deskkit) ausgelagert —
   geteilt mit MovieDesk, ComicDesk und AudioDesk.
+
+### Fixed
+
+- Suche fand bei einer Serie nur den einen Band, dessen eigener Titel
+  zufällig genauso hieß wie die Serie — die übrigen Bände (eigener Titel,
+  nur über den Serienname zusammengehalten) blieben unsichtbar. Die Suche
+  prüft jetzt zusätzlich zu Titel/Autor auch den Serienname.
 
 [Unreleased]: https://github.com/aaaaaprvdgrwwelt/bookdesk/commits/main

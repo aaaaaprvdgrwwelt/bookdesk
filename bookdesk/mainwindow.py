@@ -296,7 +296,8 @@ class MainWindow(QMainWindow):
                 continue
             if self._search_text and not (
                     self._search_text in (item.title or "").lower()
-                    or self._search_text in item.author_line.lower()):
+                    or self._search_text in item.author_line.lower()
+                    or self._search_text in (item.series or "").lower()):
                 continue
             list_item = QListWidgetItem(item.title or Path(item.path).stem)
             list_item.setData(Qt.UserRole, item)
