@@ -9,7 +9,14 @@ from pathlib import Path
 
 EPUB_EXTENSIONS = {".epub"}
 PDF_EXTENSIONS = {".pdf"}
-BOOK_EXTENSIONS = EPUB_EXTENSIONS | PDF_EXTENSIONS
+#: .azw ist derselbe PalmDB/MOBI-Container wie .mobi, .azw3 ist die
+#: neuere KF8-Variante - alle drei landen beim Entpacken ueber `mobi.py`.
+MOBI_EXTENSIONS = {".mobi", ".azw", ".azw3"}
+BOOK_EXTENSIONS = EPUB_EXTENSIONS | PDF_EXTENSIONS | MOBI_EXTENSIONS
+#: Zurueckschreiben ist nur fuer EPUB und PDF moeglich - MOBI/AZW3 sind ein
+#: verschachteltes Binaerformat, das sich nicht sicher inkrementell patchen
+#: laesst (siehe formats/mobi.py: nur lesend, ueber Entpacken).
+WRITABLE_EXTENSIONS = EPUB_EXTENSIONS | PDF_EXTENSIONS
 
 
 @dataclass
@@ -37,6 +44,9 @@ def read_metadata(path: Path) -> BookMeta:
     if suffix in PDF_EXTENSIONS:
         from . import pdf
         return pdf.read_metadata(path)
+    if suffix in MOBI_EXTENSIONS:
+        from . import mobi
+        return mobi.read_metadata(path)
     return BookMeta()
 
 
@@ -48,15 +58,22 @@ def cover_bytes(path: Path) -> bytes | None:
     if suffix in PDF_EXTENSIONS:
         from . import pdf
         return pdf.cover_bytes(path)
+    if suffix in MOBI_EXTENSIONS:
+        from . import mobi
+        return mobi.cover_bytes(path)
     return None
 
 
 def chapters(path: Path) -> list[Chapter]:
-    """Nur fuer EPUB belegt - PDF wird seitenweise gelesen (siehe reader.py),
-    das Kapitel-Konzept passt dort nicht."""
-    if path.suffix.lower() in EPUB_EXTENSIONS:
+    """Fuer EPUB und MOBI/AZW3 belegt - PDF wird seitenweise gelesen (siehe
+    reader.py), das Kapitel-Konzept passt dort nicht."""
+    suffix = path.suffix.lower()
+    if suffix in EPUB_EXTENSIONS:
         from . import epub
         return epub.chapters(path)
+    if suffix in MOBI_EXTENSIONS:
+        from . import mobi
+        return mobi.chapters(path)
     return []
 
 
@@ -77,11 +94,15 @@ def page_image(path: Path, index: int, max_width: int = 1400) -> bytes | None:
 
 
 def is_drm_protected(path: Path) -> bool:
-    """Nur fuer EPUB belegt - PDF-Passwortschutz ist ein eigenes,
+    """Fuer EPUB und MOBI/AZW3 belegt - PDF-Passwortschutz ist ein eigenes,
     selteneres Problem und wird hier (noch) nicht erkannt."""
-    if path.suffix.lower() in EPUB_EXTENSIONS:
+    suffix = path.suffix.lower()
+    if suffix in EPUB_EXTENSIONS:
         from . import epub
         return epub.is_drm_protected(path)
+    if suffix in MOBI_EXTENSIONS:
+        from . import mobi
+        return mobi.is_drm_protected(path)
     return False
 
 
@@ -94,7 +115,7 @@ def find_pages(path: Path, query: str) -> list[int]:
 
 
 def can_write(path: Path) -> bool:
-    return path.suffix.lower() in BOOK_EXTENSIONS
+    return path.suffix.lower() in WRITABLE_EXTENSIONS
 
 
 def write_metadata(path: Path, meta: BookMeta) -> None:

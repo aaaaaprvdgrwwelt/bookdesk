@@ -10,10 +10,11 @@ umbenennen, löschen. Python + Qt (PySide6), auf demselben
 [AudioDesk](https://github.com/aaaaaprvdgrwwelt/audiodesk). Läuft unter
 Linux, Windows und macOS. Oberfläche auf Deutsch und Englisch.
 
-Unterstützte Formate: **EPUB** (Kapitel-Reader) und **PDF** (Seiten-Reader).
-Metadaten kommen zuerst aus der Datei selbst, ergänzt durch einen
-optionalen Abgleich gegen [OpenLibrary](https://openlibrary.org)
-(kostenlos, kein API-Key nötig).
+Unterstützte Formate: **EPUB** (Kapitel-Reader), **PDF** (Seiten-Reader) und
+**MOBI/AZW3/AZW** (nur lesend, siehe [Formate](#formate)). Metadaten
+kommen zuerst aus der Datei selbst, ergänzt durch einen optionalen
+Abgleich gegen [OpenLibrary](https://openlibrary.org) (kostenlos, kein
+API-Key nötig).
 
 > Status: nutzbar. Entwickelt und getestet unter Linux; Windows und macOS
 > sollten funktionieren (reines Qt/Python), sind aber nicht manuell
@@ -113,11 +114,19 @@ automatisch in die Ebook-Datei zurückgeschrieben — dafür gibt es
 |---|---|---|---|
 | EPUB | ja, kapitelweise | OPF-Metadaten inkl. Calibre-Serieninformation | ja — OPF-Datei im Archiv wird ersetzt, alle anderen Dateien bleiben byte-identisch |
 | PDF | ja, seitenweise (über [PyMuPDF](https://pymupdf.readthedocs.io/)) | Dokumenteigenschaften (Titel/Autor, falls gesetzt) — PDFs haben in der Regel keine Serieninformation | ja — inkrementell über PyMuPDF, kein Neuschreiben der ganzen Datei |
+| MOBI / AZW3 / AZW | ja — über die reine-Python-Bibliothek [mobi](https://pypi.org/project/mobi/) (KindleUnpack) intern entpackt | Bei KF8-Titeln (praktisch alle AZW3 und neueren MOBI) wie EPUB, weil intern zu einem gleichwertigen EPUB entpackt wird; bei älteren reinen MOBI7-Titeln nur Titel/Autor/Sprache/Jahr aus der beigelegten OPF | **nein** — das Binärformat lässt sich nicht sicher inkrementell patchen; „Metadaten speichern …“ meldet das als Fehler statt still zu scheitern |
 
 Zurückschreiben in EPUB läuft über einen sicheren Umweg: erst in eine
 temporäre Datei schreiben, deren ZIP-Integrität prüfen, dann erst das
 Original per atomarem `os.replace()` ersetzen — ein Fehler mittendrin
 beschädigt nie die vorhandene Datei.
+
+Bei MOBI7-Titeln (kein KF8-Anteil) schreibt KindleUnpack den gesamten Text
+in eine einzige HTML-Datei — der Reader zeigt sie deshalb als ein
+durchgehendes „Kapitel“ ohne Kapitel-Navigation, statt wie bei EPUB
+kapitelweise zu blättern. Verschlüsselte (DRM-geschützte) MOBI/AZW3-Dateien
+werden über das Encryption-Type-Feld im PalmDOC-Header erkannt und wie
+DRM-geschützte EPUBs klar als Fehler markiert, statt entpackt zu werden.
 
 ## Umbenennen …
 

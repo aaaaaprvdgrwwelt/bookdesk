@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "bookdesk"
 version = "0.1.0"
-description = "Ein Dateimanager nur fuer Ebooks (EPUB, PDF): sichten, lesen, Metadaten holen, umbenennen"
+description = "Ein Dateimanager nur fuer Ebooks (EPUB, PDF, MOBI/AZW3): sichten, lesen, Metadaten holen, umbenennen"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
@@ -18,6 +18,7 @@ dependencies = [
     "PySide6>=6.6",
     "ebooklib>=0.18",
     "pymupdf>=1.23",
+    "mobi>=0.4",
     "requests>=2.31",
     "send2trash>=1.8",
 ]

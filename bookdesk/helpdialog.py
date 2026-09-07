@@ -33,6 +33,14 @@ Datei (inkl. Calibre-Serieninformation, falls vorhanden).</p>
 <p><b>PDF</b>: Seitenweiser Reader, Metadaten aus den PDF-Dokument-
 eigenschaften (Titel/Autor, falls gesetzt) - PDFs haben in der Regel keine
 Serieninformation.</p>
+<p><b>MOBI/AZW3/AZW</b>: nur lesend, wird intern entpackt. Titel mit
+KF8-Anteil (praktisch alle AZW3 und neueren MOBI) landen dabei als
+gleichwertiges EPUB und lesen sich genauso kapitelweise; aeltere reine
+MOBI7-Titel ohne KF8-Anteil zeigt der Reader als ein einziges
+durchgehendes "Kapitel" ohne Kapitel-Navigation. Verschluesselte Dateien
+werden erkannt und wie DRM-geschuetzte EPUBs als Fehler markiert.
+Zurueckschreiben (<code>Strg+S</code>) ist fuer dieses Format nicht
+moeglich.</p>
 
 <h2>Im Reader: Zoom und Suche</h2>
 <p><b>Zoom</b> - <code>Strg++</code>/<code>Strg+-</code>/<code>Strg+0</code>
