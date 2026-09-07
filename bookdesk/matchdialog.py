@@ -32,6 +32,7 @@ class MatchDialog(QDialog):
         self.resize(560, 560)
 
         self.query_edit = QLineEdit(item.title)
+        self.query_edit.returnPressed.connect(self._search)
         search_button = QPushButton(_("Suchen"))
         search_button.clicked.connect(self._search)
         search_row = QHBoxLayout()
