@@ -63,12 +63,29 @@ def _clean_empty_tokens(formatted: str) -> str:
     return "/".join(p for p in parts if p.strip())
 
 
+def _series_index_value(raw: str) -> int | float | str:
+    """Als Zahl liefern, wenn `raw` eine ist - sonst unveraendert als Text.
+    Nur so wirkt eine Breitenangabe in der Vorlage wie `{series_index:02}`
+    tatsaechlich fuehrend auffuellend: str.format richtet Zahlen bei einer
+    Breitenangabe rechtsbuendig aus (führende Nullen), Text dagegen
+    linksbuendig (nachgestellte Nullen) - bei reinem Text kaeme bei ":02"
+    also "10" -> "10" aber "5" -> "50" statt der gewuenschten "05" heraus."""
+    raw = raw.strip()
+    if not raw:
+        return ""
+    try:
+        value = float(raw)
+    except ValueError:
+        return _safe_value(raw)
+    return int(value) if value.is_integer() else value
+
+
 def build_target(root: Path, item: Item, template: str) -> Path:
     ext = Path(item.path).suffix
     formatted = template.format(
         author=_safe_value(", ".join(item.authors) or _("Unbekannt")),
         series=_safe_value(item.series or ""),
-        series_index=_safe_value(item.series_index or ""),
+        series_index=_series_index_value(item.series_index or ""),
         title=_safe_value(item.title or _("Unbekannt")),
         year=item.year or "", ext="")
     formatted = _clean_empty_tokens(formatted)

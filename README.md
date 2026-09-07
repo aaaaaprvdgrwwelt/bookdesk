@@ -177,6 +177,12 @@ DRM-geschützte EPUBs klar als Fehler markiert, statt entpackt zu werden.
 Platzhalter: `{author} {series} {series_index} {title} {year} {ext}`. Ein
 `/` in der Vorlage legt eine neue Ordnerebene an.
 
+`{series_index}` mit führenden Nullen: `{series_index:02}` macht aus `1`
+`01`, `{series_index:03}` macht `007` aus `7` — Pythons Format-Mini-
+Sprache, wirkt nur bei einer reinen Zahl (Dezimalzahlen wie `1.5` und
+reiner Text wie `Vorspiel` bleiben unverändert, mit oder ohne
+Breitenangabe).
+
 ## Nur ein einzelnes Buch neu scannen
 
 Rechtsklick auf ein Buch → *Nur dieses Buch scannen*. Anders als bei

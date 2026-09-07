@@ -88,7 +88,10 @@ unauffaellig in der Bibliothek zu fuehren.</p>
 <h2>Umbenennen-Vorlage</h2>
 <p>Unter <b>Einstellungen &rarr; Umbenennen</b> frei einstellbar. Platzhalter:
 <code>{author} {series} {series_index} {title} {year} {ext}</code>. Ein
-<code>/</code> in der Vorlage legt eine neue Ordnerebene an.</p>
+<code>/</code> in der Vorlage legt eine neue Ordnerebene an.
+<code>{series_index:02}</code> fuegt bei einer reinen Zahl fuehrende Nullen
+ein (aus <code>1</code> wird <code>01</code>), <code>{series_index:03}</code>
+entsprechend drei Stellen.</p>
 
 <h2>Loeschen</h2>
 <p>Verschiebt Dateien in den Papierkorb, nichts wird endgueltig geloescht.</p>

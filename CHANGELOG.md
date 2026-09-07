@@ -7,6 +7,10 @@ Noch kein Release getaggt — alles bislang unter „Unreleased“.
 
 ### Added
 
+- `{series_index}` in der Umbenennen-Vorlage unterstützt jetzt eine
+  Breitenangabe für führende Nullen: `{series_index:02}` macht aus `1`
+  `01`, `{series_index:03}` macht `007` aus `7`. Wirkt nur bei einer
+  reinen Zahl — Dezimalzahlen und reiner Text bleiben unverändert.
 - Cover dauerhaft speichern (`coverstore.py`), statt nur im flüchtigen
   Thumbnail-Cache: unter *Einstellungen → Bibliothek* wählbar zwischen
   „nicht speichern“ (Vorgabe), „neben der Buchdatei“ (gleicher Name,

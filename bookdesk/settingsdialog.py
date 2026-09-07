@@ -136,6 +136,11 @@ class SettingsDialog(QDialog):
             _("Platzhalter: {author} {series} {series_index} {title} {year} {ext}")))
         self.rename_template = QLineEdit(settings.rename_template)
         layout.addWidget(self.rename_template)
+        hint = QLabel(_(
+            "{series_index:02} fuegt bei einer reinen Zahl fuehrende Nullen "
+            "ein (aus 1 wird 01), {series_index:03} entsprechend drei Stellen."))
+        hint.setWordWrap(True)
+        layout.addWidget(hint)
         layout.addStretch(1)
         return widget
 
