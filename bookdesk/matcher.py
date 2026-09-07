@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import requests
 from PySide6.QtCore import QObject, QThread, Signal
 
 from deskkit.matching import title_similarity
@@ -36,8 +37,25 @@ def score_candidate(query: SearchQuery, candidate: Candidate) -> int:
     return round(min(score, 100))
 
 
+def _describe_error(provider: MetadataProvider, exc: Exception) -> str:
+    """Kurze, fuer den Nutzer verstaendliche Fehlermeldung statt einer
+    rohen Exception - vor allem fuer ein erschoepftes Tageslimit bei
+    Google Books (HTTP 429), das sonst nicht von einem echten "kein
+    Treffer" zu unterscheiden waere."""
+    if isinstance(exc, requests.HTTPError) and exc.response is not None:
+        status = exc.response.status_code
+        if status == 429:
+            return _("{name}: Tageslimit erreicht").format(name=provider.label)
+        return _("{name}: Fehler ({code})").format(name=provider.label, code=status)
+    return _("{name}: Fehler").format(name=provider.label)
+
+
 def collect_candidates(query: SearchQuery, config: MatchConfig,
-                       limit: int = 10) -> list[Candidate]:
+                       limit: int = 10,
+                       errors: list[str] | None = None) -> list[Candidate]:
+    """`errors` wird (falls uebergeben) um eine kurze Meldung je Quelle
+    ergaenzt, die einen Fehler statt "kein Treffer" geliefert hat - siehe
+    identify()."""
     candidates: list[Candidate] = []
     for provider in config.providers:
         ok, _why = provider.available()
@@ -45,7 +63,9 @@ def collect_candidates(query: SearchQuery, config: MatchConfig,
             continue
         try:
             found = provider.search(query, limit)
-        except Exception:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001
+            if errors is not None:
+                errors.append(_describe_error(provider, exc))
             continue
         for candidate in found:
             candidate.score = score_candidate(query, candidate)
@@ -60,9 +80,13 @@ def identify(query: SearchQuery,
     gefunden hat."""
     if not config.providers:
         return None, 0, _("Keine Quelle konfiguriert.")
-    candidates = collect_candidates(query, config)
+    errors: list[str] = []
+    candidates = collect_candidates(query, config, errors=errors)
     if not candidates:
-        return None, 0, _("kein Treffer")
+        note = _("kein Treffer")
+        if errors:
+            note += " (" + "; ".join(errors) + ")"
+        return None, 0, note
     best = candidates[0]
     provider = next((p for p in config.providers if p.name == best.source), None)
     info = provider.details(best) if provider else None

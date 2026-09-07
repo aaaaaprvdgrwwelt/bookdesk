@@ -67,6 +67,12 @@ Noch kein Release getaggt — alles bislang unter „Unreleased“.
 
 ### Fixed
 
+- Ein erschoepftes Google-Books-Tageslimit (HTTP 429) sah bislang genauso
+  aus wie ein echtes „kein Treffer“ — der Fehler wurde in
+  `collect_candidates()` stillschweigend verschluckt. Der Status zeigt
+  jetzt „Tageslimit erreicht“, wenn eine Quelle deswegen ausgefallen ist,
+  statt ein Buch faelschlich als „online nicht gefunden“ erscheinen zu
+  lassen.
 - Automatisches Zuordnen fand bei Titeln mit fuehrender Bandnummer wie
   „006 - “ oft nichts, selbst bei bekannten Büchern — die Nummer landete
   unbereinigt in der Suchanfrage. Ein konkreter, real aufgetretener Fall:

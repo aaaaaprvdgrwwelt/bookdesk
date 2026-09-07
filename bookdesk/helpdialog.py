@@ -28,7 +28,11 @@ Autor aus den vorhandenen Metadaten bzw. dem Dateinamen. Sind beide
 Quellen aktiv, werden ihre Treffer gemeinsam bewertet - der beste Treffer
 gewinnt, unabhaengig davon, welche Quelle ihn geliefert hat.
 <b>Google Books</b> deckt oft Self-Publishing-/Kindle-Titel ab, die
-OpenLibrary nicht kennt. Die Metadaten werden nicht in die Ebook-Datei
+OpenLibrary nicht kennt. Ohne eigenen API-Key gilt dort ein
+nicht dokumentiertes Tageslimit - bei Ueberschreitung zeigt der Status
+"Tageslimit erreicht" statt eines gewoehnlichen "kein Treffer": nicht
+das Buch fehlt online, die Quelle war nur voruebergehend nicht
+erreichbar. Die Metadaten werden nicht in die Ebook-Datei
 zurueckgeschrieben - sie dienen nur der Anzeige und dem Umbenennen.</p>
 
 <h2>Manuell zuordnen</h2>

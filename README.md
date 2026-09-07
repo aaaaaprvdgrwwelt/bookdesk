@@ -121,7 +121,10 @@ Treffer gewinnt, unabhängig davon, welche Quelle ihn geliefert hat.
   Amazons Self-Publishing-Programm erschienen sind). Ohne eigenen API-Key
   gilt ein grosszügiges, aber nicht dokumentiertes Tageslimit pro IP —
   bei Überschreitung wird diese Quelle für den Abgleich einfach
-  übersprungen, statt den Abgleich abzubrechen.
+  übersprungen, statt den Abgleich abzubrechen. Der Status zeigt dann
+  „Tageslimit erreicht“ statt eines gewöhnlichen „kein Treffer“, damit
+  klar ist: nicht das Buch fehlt online, sondern die Quelle war
+  vorübergehend nicht erreichbar — am nächsten Tag erneut versuchen.
 
 Die Metadaten werden nicht automatisch in die Ebook-Datei
 zurückgeschrieben — dafür gibt es **Metadaten in Datei speichern …**
