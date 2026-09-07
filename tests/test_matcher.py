@@ -51,3 +51,43 @@ def test_score_candidate_caps_at_100():
     candidate = Candidate(source="openlibrary", external_id="1",
                           title="Dune", authors=["Frank Herbert"])
     assert score_candidate(query, candidate) <= 100
+
+
+def test_search_title_strips_language_edition_suffix():
+    from bookdesk.providers.base import search_title
+    assert search_title("QualityLand 2.0: Kikis Geheimnis (German Edition)") == \
+        "QualityLand 2.0: Kikis Geheimnis"
+
+
+def test_search_title_strips_custom_edition_suffix():
+    from bookdesk.providers.base import search_title
+    assert search_title("QualityLand (dunkle Edition)") == "QualityLand"
+
+
+def test_search_title_strips_kindle_and_narration_suffixes():
+    from bookdesk.providers.base import search_title
+    assert search_title("Dune (Kindle Edition)") == "Dune"
+    assert search_title("Dune (Ungekuerzt)") == "Dune"
+    assert search_title("Dune (Unabridged)") == "Dune"
+
+
+def test_search_title_leaves_unrelated_parens_untouched():
+    from bookdesk.providers.base import search_title
+    assert search_title("Dune (Dune Chronicles Book 1)") == "Dune (Dune Chronicles Book 1)"
+
+
+def test_search_title_leaves_plain_titles_untouched():
+    from bookdesk.providers.base import search_title
+    assert search_title("The Hobbit") == "The Hobbit"
+
+
+def test_search_title_strips_multiple_trailing_suffixes():
+    from bookdesk.providers.base import search_title
+    assert search_title("Titel (German Edition) (Kindle Edition)") == "Titel"
+
+
+def test_search_title_never_returns_empty():
+    from bookdesk.providers.base import search_title
+    # Ein reiner Klammertitel bliebe sonst leer - dann lieber den
+    # Originaltitel behalten als eine leere Suchanfrage zu schicken.
+    assert search_title("(German Edition)") == "(German Edition)"

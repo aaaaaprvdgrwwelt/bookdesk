@@ -1,14 +1,15 @@
 """Gemeinsame Schnittstelle fuer Metadaten-Quellen (Buecher)."""
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 from deskkit.matching import normalize_title, title_similarity
 
 __all__ = [
     "normalize_title", "title_similarity", "normalize_author",
-    "author_overlap", "ROLE_PRIMARY", "ROLE_SUPPLEMENT", "SearchQuery",
-    "Candidate", "BookInfo", "MetadataProvider",
+    "author_overlap", "search_title", "ROLE_PRIMARY", "ROLE_SUPPLEMENT",
+    "SearchQuery", "Candidate", "BookInfo", "MetadataProvider",
 ]
 
 #: Quellen, die ein Buch selbst bestimmen koennen.
@@ -19,6 +20,34 @@ ROLE_SUPPLEMENT = "supplement"
 
 def normalize_author(name: str) -> str:
     return normalize_title(name)
+
+
+#: Klammerzusatz am Titelende, der eine Ausgabenvariante statt eines Teils
+#: des eigentlichen Titels benennt - haeufig bei Amazon-/Kindle-Ebooks
+#: ("German Edition", "Kindle Edition", "dunkle Edition", "Ungekuerzt").
+#: Ohne diesen Zusatz sitzt der eigentliche Buchtitel meist trotzdem in
+#: der verbleibenden Zeichenkette.
+_EDITION_SUFFIX = re.compile(
+    r"\s*\([^()]*\b(?:edition|ausgabe|ungek(?:u|ü|ue)rzt|gek(?:u|ü|ue)rzt|"
+    r"unabridged|abridged|h(?:o|ö|oe)rbuch|audiobook)\b[^()]*\)\s*$",
+    re.IGNORECASE)
+
+
+def search_title(title: str) -> str:
+    """Titel fuer die Anfrage an eine Online-Quelle bereinigt - ein
+    Klammerzusatz wie "(German Edition)" liefert sonst bei praktisch
+    jeder Quelle null Treffer, selbst bei bekannten Buechern (beobachtet
+    bei einem echten Fall: "QualityLand (dunkle Edition)" fand nichts,
+    "QualityLand" allein sofort einen 100%-Treffer). Wirkt nur auf die
+    Suchanfrage - der in der Bibliothek gespeicherte Titel bleibt
+    unveraendert."""
+    cleaned = title
+    while True:
+        stripped = _EDITION_SUFFIX.sub("", cleaned).strip()
+        if stripped == cleaned:
+            break
+        cleaned = stripped
+    return cleaned or title
 
 
 def author_overlap(a: list[str], b: list[str]) -> float:

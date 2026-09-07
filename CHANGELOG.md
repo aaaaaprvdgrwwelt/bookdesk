@@ -55,6 +55,14 @@ Noch kein Release getaggt — alles bislang unter „Unreleased“.
 
 ### Fixed
 
+- Automatisches Zuordnen fand bei Titeln mit Klammerzusatz wie
+  „(German Edition)“ oder „(dunkle Edition)“ (häufig bei Amazon-/Kindle-
+  Ebooks) oft gar nichts, selbst bei bekannten Büchern — der Zusatz
+  landete unbereinigt in der Suchanfrage. Ein konkreter, real
+  aufgetretener Fall: „QualityLand (dunkle Edition)“ fand nichts,
+  „QualityLand“ allein sofort einen 100%-Treffer. Die Suchanfrage wird
+  jetzt um solche Zusätze bereinigt (`providers/base.py: search_title()`)
+  — der gespeicherte Titel selbst bleibt unverändert.
 - Suche fand bei einer Serie nur den einen Band, dessen eigener Titel
   zufällig genauso hieß wie die Serie — die übrigen Bände (eigener Titel,
   nur über den Serienname zusammengehalten) blieben unsichtbar. Die Suche

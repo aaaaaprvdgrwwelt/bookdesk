@@ -18,7 +18,7 @@ from . import coverstore
 from .i18n import _
 from .library import Item, LibraryIndex, STATUS_MATCHED
 from .matcher import MatchConfig, collect_candidates
-from .providers.base import BookInfo, Candidate, SearchQuery
+from .providers.base import BookInfo, Candidate, SearchQuery, search_title
 from .thumbs import CoverLoader
 
 TAB_SEARCH = 0
@@ -62,7 +62,7 @@ class MatchDialog(QDialog):
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
-        self.query_edit = QLineEdit(self.item.title)
+        self.query_edit = QLineEdit(search_title(self.item.title))
         self.query_edit.returnPressed.connect(self._search)
         search_button = QPushButton(_("Suchen"))
         search_button.clicked.connect(self._search)

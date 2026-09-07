@@ -14,6 +14,7 @@ from .i18n import _
 from .library import LibraryIndex, STATUS_ERROR, STATUS_MATCHED, STATUS_UNSURE
 from .providers.base import (
     BookInfo, Candidate, MetadataProvider, SearchQuery, author_overlap,
+    search_title,
 )
 
 DEFAULT_THRESHOLD = 70
@@ -94,7 +95,7 @@ class AutoMatchWorker(QObject):
             item = self.library.get(path)
             if item is None:
                 continue
-            query = SearchQuery(title=item.title, authors=item.authors)
+            query = SearchQuery(title=search_title(item.title), authors=item.authors)
             try:
                 info, score, note = identify(query, self.config)
             except Exception as exc:  # noqa: BLE001
