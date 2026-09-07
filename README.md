@@ -192,6 +192,17 @@ mit Live-Anzahl. Praktisch, um sich gezielt durch das zu arbeiten, was
 noch Aufmerksamkeit braucht, statt die ganze (oft große) Bibliothek
 durchzusehen.
 
+## Serie zuweisen
+
+Rechtsklick auf ein oder mehrere Bücher → *Serie zuweisen …* — unabhängig
+vom sonstigen Metadaten-Abgleich, ändert nur Serie und Band, alles andere
+(Titel, Autor, Status, Cover …) bleibt unangetastet. Praktisch für Bücher,
+die bereits zugeordnet sind (oder bewusst nicht online abgeglichen werden
+sollen) und nur noch der Serie fehlen — z. B. genau die Fälle aus dem
+Filter **Ohne Serie**. Bei mehreren ausgewählten Büchern gemeinsam für
+alle, mit optionaler fortlaufender Nummerierung (in der Reihenfolge, in
+der die Bücher gerade in der Liste stehen).
+
 ## Nur ein einzelnes Buch neu scannen
 
 Rechtsklick auf ein Buch → *Nur dieses Buch scannen*. Anders als bei

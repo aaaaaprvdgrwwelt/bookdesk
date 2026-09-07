@@ -99,6 +99,13 @@ Live-Anzahl: <b>Nicht zugeordnet</b> (alles ausser Status "zugeordnet")
 und <b>Ohne Serie</b> (leeres Serien-Feld) - praktisch, um gezielt durch
 das zu arbeiten, was noch Aufmerksamkeit braucht.</p>
 
+<h2>Serie zuweisen</h2>
+<p>Rechtsklick auf ein oder mehrere Buecher &rarr; <i>Serie zuweisen …</i>
+- unabhaengig vom sonstigen Metadaten-Abgleich, aendert nur Serie und
+Band, alles andere bleibt unangetastet. Bei mehreren ausgewaehlten
+Buechern gemeinsam fuer alle, mit optionaler fortlaufender
+Nummerierung.</p>
+
 <h2>Loeschen</h2>
 <p>Verschiebt Dateien in den Papierkorb, nichts wird endgueltig geloescht.</p>
 

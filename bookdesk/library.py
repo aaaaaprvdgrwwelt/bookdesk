@@ -203,6 +203,17 @@ class LibraryIndex:
                  note, time.time(), str(path)))
             self._con.commit()
 
+    def set_series(self, path: Path, series: str, series_index: str = "") -> None:
+        """Nur Serie/Band setzen - anders als set_match() bleiben Titel,
+        Autoren, Cover, Status usw. unangetastet. Fuer den Fall, dass ein
+        Buch schon (oder noch gar nicht) zugeordnet ist und nur die
+        Serienzugehoerigkeit fehlt (siehe seriesdialog.py)."""
+        with self._lock:
+            self._con.execute(
+                "UPDATE items SET series=?, series_index=? WHERE path=?",
+                (series, series_index, str(path)))
+            self._con.commit()
+
     def set_status(self, path: Path, status: str, note: str = "") -> None:
         with self._lock:
             self._con.execute(

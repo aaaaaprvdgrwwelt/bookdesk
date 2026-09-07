@@ -7,6 +7,10 @@ Noch kein Release getaggt — alles bislang unter „Unreleased“.
 
 ### Added
 
+- „Serie zuweisen …“ (Rechtsklick, ein oder mehrere Bücher) — setzt nur
+  Serie und Band, unabhängig vom sonstigen Metadaten-Abgleich, alles
+  andere bleibt unangetastet. Bei mehreren ausgewählten Büchern
+  gemeinsam für alle, mit optionaler fortlaufender Nummerierung.
 - Zwei feste Zusatzfilter in der Serien-Liste, mit Live-Anzahl:
   **Nicht zugeordnet** (Status ungleich „zugeordnet“) und **Ohne Serie**
   (leeres Serien-Feld) — um gezielt durch das zu arbeiten, was noch

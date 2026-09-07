@@ -28,6 +28,7 @@ from .i18n import _, set_language
 from .icons import icon as tool_icon
 from .library import STATUS_MATCHED, Item, LibraryIndex
 from .matchdialog import MatchDialog
+from .seriesdialog import SeriesDialog
 from .metapanel import MetaPanel
 from .reader import ReaderWindow
 from .renamedialog import RenameDialog
@@ -415,6 +416,14 @@ class MainWindow(QMainWindow):
         if dialog.exec():
             self.refresh_view()
 
+    def _assign_series(self, items: list[Item]) -> None:
+        """Nur Serie/Band setzen, unabhaengig vom sonstigen Zuordnen -
+        siehe seriesdialog.py. Bei mehreren ausgewaehlten Buechern
+        gemeinsam fuer alle."""
+        dialog = SeriesDialog(items, self.library, self)
+        if dialog.exec():
+            self.refresh_view()
+
     # --- Metadaten in die Datei zurueckschreiben --------------------------
     def write_metadata_to_file(self) -> None:
         """Anders als Umbenennen/Loeschen aendert das die Originaldatei
@@ -538,6 +547,8 @@ class MainWindow(QMainWindow):
         if len(items) == 1:
             menu.addAction(_("Manuell zuordnen …"),
                            lambda: self._manual_match(items[0]))
+        menu.addAction(_("Serie zuweisen …"), lambda: self._assign_series(items))
+        if len(items) == 1:
             menu.addAction(
                 tool_icon("refresh"), _("Nur dieses Buch scannen"),
                 # Erst starten, wenn das Kontextmenue sich geschlossen hat -
