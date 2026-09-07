@@ -183,6 +183,15 @@ Sprache, wirkt nur bei einer reinen Zahl (Dezimalzahlen wie `1.5` und
 reiner Text wie `Vorspiel` bleiben unverändert, mit oder ohne
 Breitenangabe).
 
+## Serien-Liste: auch als Filter
+
+Links neben dem Bücherraster steht neben den echten Serien immer
+**Nicht zugeordnet** (alles außer Status „zugeordnet“ — unsicher,
+fehlgeschlagen, Fehler) und **Ohne Serie** (leeres `series`-Feld), beide
+mit Live-Anzahl. Praktisch, um sich gezielt durch das zu arbeiten, was
+noch Aufmerksamkeit braucht, statt die ganze (oft große) Bibliothek
+durchzusehen.
+
 ## Nur ein einzelnes Buch neu scannen
 
 Rechtsklick auf ein Buch → *Nur dieses Buch scannen*. Anders als bei

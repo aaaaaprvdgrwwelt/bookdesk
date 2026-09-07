@@ -7,6 +7,10 @@ Noch kein Release getaggt — alles bislang unter „Unreleased“.
 
 ### Added
 
+- Zwei feste Zusatzfilter in der Serien-Liste, mit Live-Anzahl:
+  **Nicht zugeordnet** (Status ungleich „zugeordnet“) und **Ohne Serie**
+  (leeres Serien-Feld) — um gezielt durch das zu arbeiten, was noch
+  Aufmerksamkeit braucht, statt die ganze Bibliothek durchzusehen.
 - `{series_index}` in der Umbenennen-Vorlage unterstützt jetzt eine
   Breitenangabe für führende Nullen: `{series_index:02}` macht aus `1`
   `01`, `{series_index:03}` macht `007` aus `7`. Wirkt nur bei einer

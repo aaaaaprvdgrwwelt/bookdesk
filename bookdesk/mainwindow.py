@@ -26,7 +26,7 @@ from .formats.base import write_metadata as write_book_metadata
 from .helpdialog import HelpDialog
 from .i18n import _, set_language
 from .icons import icon as tool_icon
-from .library import Item, LibraryIndex
+from .library import STATUS_MATCHED, Item, LibraryIndex
 from .matchdialog import MatchDialog
 from .metapanel import MetaPanel
 from .reader import ReaderWindow
@@ -43,6 +43,12 @@ STATUS_LABEL = {
     "unmatched": _("nicht zugeordnet"),
     "error": _("Fehler"),
 }
+
+#: Sentinel-Werte fuer Qt.UserRole in der Serien-Liste - neben den echten
+#: Serien-Namen (str) und "Alle Buecher" (None) zwei feste Zusatzfilter,
+#: die immer angezeigt werden (auch mit Anzahl 0).
+FILTER_UNMATCHED = object()
+FILTER_NO_SERIES = object()
 STATUS_COLOR = {
     "matched": QColor(46, 160, 90),
     "unsure": QColor(214, 154, 40),
@@ -259,28 +265,50 @@ class MainWindow(QMainWindow):
         self._search_text = text.strip().lower()
         self._fill_books()
 
-    def _selected_series(self) -> str | None:
+    def _selected_filter(self):
+        """None = Alle Buecher, ein str = Serienname, sonst FILTER_UNMATCHED
+        oder FILTER_NO_SERIES - siehe _fill_books()."""
         items = self.series_list.selectedItems()
         return items[0].data(Qt.UserRole) if items else None
 
     def _fill_series(self) -> None:
-        selected_titles = {i.data(Qt.UserRole) for i in self.series_list.selectedItems()}
+        selected = {i.data(Qt.UserRole) for i in self.series_list.selectedItems()}
         self.series_list.clear()
+
         all_item = QListWidgetItem(_("Alle Buecher"))
         all_item.setData(Qt.UserRole, None)
         self.series_list.addItem(all_item)
-        to_reselect = [all_item] if None in selected_titles or not selected_titles else []
+
+        books = self.library.list_books()
+        unmatched_count = sum(1 for i in books if i.status != STATUS_MATCHED)
+        no_series_count = sum(1 for i in books if not i.series)
+
+        unmatched_item = QListWidgetItem(f"{_('Nicht zugeordnet')}  ({unmatched_count})")
+        unmatched_item.setData(Qt.UserRole, FILTER_UNMATCHED)
+        self.series_list.addItem(unmatched_item)
+
+        no_series_item = QListWidgetItem(f"{_('Ohne Serie')}  ({no_series_count})")
+        no_series_item.setData(Qt.UserRole, FILTER_NO_SERIES)
+        self.series_list.addItem(no_series_item)
+
+        to_reselect = [all_item] if None in selected or not selected else []
+        if FILTER_UNMATCHED in selected:
+            to_reselect.append(unmatched_item)
+        if FILTER_NO_SERIES in selected:
+            to_reselect.append(no_series_item)
+
         for name, items in self.library.series_groups():
             list_item = QListWidgetItem(f"{name}  ({len(items)})")
             list_item.setData(Qt.UserRole, name)
             self.series_list.addItem(list_item)
-            if name in selected_titles:
+            if name in selected:
                 to_reselect.append(list_item)
+
         if to_reselect:
             self.series_list.setCurrentItem(to_reselect[0])
             for list_item in to_reselect:
                 list_item.setSelected(True)
-        elif not selected_titles:
+        elif not selected:
             self.series_list.setCurrentItem(all_item)
 
     def _on_series_selected(self) -> None:
@@ -289,10 +317,16 @@ class MainWindow(QMainWindow):
     def _fill_books(self) -> None:
         selected_ids = {i.data(Qt.UserRole).id for i in self.book_list.selectedItems()}
         self.book_list.clear()
-        series = self._selected_series()
+        filter_value = self._selected_filter()
         to_reselect = []
         for item in self.library.list_books():
-            if series is not None and item.series != series:
+            if filter_value is FILTER_UNMATCHED:
+                if item.status == STATUS_MATCHED:
+                    continue
+            elif filter_value is FILTER_NO_SERIES:
+                if item.series:
+                    continue
+            elif filter_value is not None and item.series != filter_value:
                 continue
             if self._search_text and not (
                     self._search_text in (item.title or "").lower()

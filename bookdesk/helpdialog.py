@@ -93,6 +93,12 @@ unauffaellig in der Bibliothek zu fuehren.</p>
 ein (aus <code>1</code> wird <code>01</code>), <code>{series_index:03}</code>
 entsprechend drei Stellen.</p>
 
+<h2>Serien-Liste: auch als Filter</h2>
+<p>Links neben den echten Serien stehen immer zwei Zusatzfilter mit
+Live-Anzahl: <b>Nicht zugeordnet</b> (alles ausser Status "zugeordnet")
+und <b>Ohne Serie</b> (leeres Serien-Feld) - praktisch, um gezielt durch
+das zu arbeiten, was noch Aufmerksamkeit braucht.</p>
+
 <h2>Loeschen</h2>
 <p>Verschiebt Dateien in den Papierkorb, nichts wird endgueltig geloescht.</p>
 
