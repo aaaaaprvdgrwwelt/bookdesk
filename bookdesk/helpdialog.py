@@ -17,7 +17,7 @@ HELP_HTML = """
     <a href="https://books.google.com">Google Books</a> - beide kostenlos,
     kein API-Key noetig, beide gleichzeitig aktiv. Unsichere oder
     fehlgeschlagene Treffer bleiben markiert und lassen sich per
-    Rechtsklick &rarr; <i>Manuell zuordnen</i> von Hand nachtragen.</li>
+    Rechtsklick &rarr; <i>Manuell zuordnen</i> nachbearbeiten.</li>
 <li>Doppelklick oder <b>Lesen</b> oeffnet den Reader - EPUB kapitelweise,
     PDF seitenweise. Die zuletzt gelesene Stelle wird gemerkt.</li>
 </ol>
@@ -30,6 +30,18 @@ gewinnt, unabhaengig davon, welche Quelle ihn geliefert hat.
 <b>Google Books</b> deckt oft Self-Publishing-/Kindle-Titel ab, die
 OpenLibrary nicht kennt. Die Metadaten werden nicht in die Ebook-Datei
 zurueckgeschrieben - sie dienen nur der Anzeige und dem Umbenennen.</p>
+
+<h2>Manuell zuordnen</h2>
+<p>Rechtsklick auf ein Buch &rarr; <i>Manuell zuordnen</i> oeffnet einen
+Dialog mit zwei Reitern:</p>
+<p><b>Suche</b>: eigener Suchtext gegen beide Online-Quellen, mit
+Trefferliste zum Auswaehlen - fuer den Fall, dass die Automatik den
+falschen Treffer gewaehlt oder den Titel schlecht getroffen hat.</p>
+<p><b>Von Hand eintragen</b>: wenn auch keine der beiden Quellen etwas
+findet (kommt bei kleinen Self-Publishing-Reihen vor, die nirgends
+katalogisiert sind), Titel, Autor(en), Serie, Band, Jahr, Beschreibung
+und Cover-URL direkt selbst eintippen. Uebernehmen setzt den Status auf
+<i>zugeordnet</i>, mit dem Hinweis "von Hand eingetragen".</p>
 
 <h2>Unterstuetzte Formate</h2>
 <p><b>EPUB</b>: Kapitelweiser Reader, Metadaten aus der eingebetteten OPF-

@@ -7,6 +7,10 @@ Noch kein Release getaggt — alles bislang unter „Unreleased“.
 
 ### Added
 
+- „Manuell zuordnen“: neuer Reiter **Von Hand eintragen** im Dialog —
+  Titel, Autor(en), Serie, Band, Jahr, Beschreibung und Cover-URL direkt
+  selbst eintippen, für den Fall, dass auch keine Online-Quelle etwas
+  findet (kleine Self-Publishing-Reihen sind oft nirgends katalogisiert).
 - [Google Books](https://books.google.com) als zweite Metadaten-Quelle,
   neben OpenLibrary — kostenlos, kein API-Key nötig, per Vorgabe aktiv,
   unter *Einstellungen → Quellen* abschaltbar. Deckt oft Self-Publishing-/

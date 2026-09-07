@@ -70,9 +70,13 @@ Unter Windows/macOS entsprechend `.venv\Scripts\python -m bookdesk` bzw.
    kommen dabei zuerst aus der Datei selbst (EPUB-Metadaten bzw.
    PDF-Dokumenteigenschaften).
 3. **Automatisch zuordnen** (`Strg+T`) ergänzt fehlende Angaben und ein
-   Cover über OpenLibrary. Unsichere oder fehlgeschlagene Treffer bleiben
-   markiert und lassen sich per Rechtsklick → *Manuell zuordnen* von Hand
-   nachtragen.
+   Cover über OpenLibrary und Google Books. Unsichere oder fehlgeschlagene
+   Treffer bleiben markiert und lassen sich per Rechtsklick →
+   *Manuell zuordnen* nachbearbeiten — entweder durch eine gezielte
+   Online-Suche mit eigenem Suchtext, oder, wenn keine der beiden Quellen
+   etwas findet (kommt bei kleinen Self-Publishing-Reihen vor), über den
+   Reiter **Von Hand eintragen**: Titel, Autor(en), Serie, Band, Jahr,
+   Beschreibung und Cover-URL direkt selbst eintippen.
 4. Doppelklick oder **Lesen** (`Enter`) öffnet den Reader — EPUB
    kapitelweise, PDF seitenweise. Die zuletzt gelesene Stelle wird
    gemerkt.
