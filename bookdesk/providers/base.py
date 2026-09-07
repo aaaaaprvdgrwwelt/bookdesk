@@ -32,18 +32,29 @@ _EDITION_SUFFIX = re.compile(
     r"unabridged|abridged|h(?:o|ö|oe)rbuch|audiobook)\b[^()]*\)\s*$",
     re.IGNORECASE)
 
+#: Fuehrende Band-/Kapitelnummer wie "006 - " oder "12 - ", haeufig direkt
+#: im eingebetteten Titel enthalten - z. B. wenn die Datei ueber ihren
+#: Dateinamen "006 - Tag der Rache.epub" getaggt wurde. Ohne diesen Zusatz
+#: sitzt der eigentliche Buchtitel meist trotzdem in der verbleibenden
+#: Zeichenkette (beobachtet bei einem echten Fall: "006 - Tag der Rache"
+#: fand nichts, "Tag der Rache" allein einen brauchbaren Treffer). Nur bis
+#: zu vier Ziffern gefolgt von einem Bindestrich, damit echte Titel wie
+#: "1984" nicht angetastet werden.
+_VOLUME_PREFIX = re.compile(r"^\s*\d{1,4}\s*-\s+")
+
 
 def search_title(title: str) -> str:
     """Titel fuer die Anfrage an eine Online-Quelle bereinigt - ein
-    Klammerzusatz wie "(German Edition)" liefert sonst bei praktisch
-    jeder Quelle null Treffer, selbst bei bekannten Buechern (beobachtet
-    bei einem echten Fall: "QualityLand (dunkle Edition)" fand nichts,
-    "QualityLand" allein sofort einen 100%-Treffer). Wirkt nur auf die
+    Klammerzusatz wie "(German Edition)" oder eine fuehrende Bandnummer
+    wie "006 - " liefert sonst bei praktisch jeder Quelle null Treffer,
+    selbst bei bekannten Buechern (siehe _EDITION_SUFFIX/_VOLUME_PREFIX
+    fuer je einen real aufgetretenen Fall). Wirkt nur auf die
     Suchanfrage - der in der Bibliothek gespeicherte Titel bleibt
     unveraendert."""
     cleaned = title
     while True:
         stripped = _EDITION_SUFFIX.sub("", cleaned).strip()
+        stripped = _VOLUME_PREFIX.sub("", stripped).strip()
         if stripped == cleaned:
             break
         cleaned = stripped

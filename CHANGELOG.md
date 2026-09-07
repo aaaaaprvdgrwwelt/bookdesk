@@ -67,6 +67,13 @@ Noch kein Release getaggt — alles bislang unter „Unreleased“.
 
 ### Fixed
 
+- Automatisches Zuordnen fand bei Titeln mit fuehrender Bandnummer wie
+  „006 - “ oft nichts, selbst bei bekannten Büchern — die Nummer landete
+  unbereinigt in der Suchanfrage. Ein konkreter, real aufgetretener Fall:
+  „006 - Tag der Rache“ fand nichts, „Tag der Rache“ allein einen
+  brauchbaren Treffer. `search_title()` entfernt jetzt auch eine
+  fuehrende Zahl samt Bindestrich (bis zu vier Ziffern, damit echte
+  Titel wie „1984“ unangetastet bleiben).
 - Automatisches Zuordnen fand bei Titeln mit Klammerzusatz wie
   „(German Edition)“ oder „(dunkle Edition)“ (häufig bei Amazon-/Kindle-
   Ebooks) oft gar nichts, selbst bei bekannten Büchern — der Zusatz

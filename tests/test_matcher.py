@@ -91,3 +91,28 @@ def test_search_title_never_returns_empty():
     # Ein reiner Klammertitel bliebe sonst leer - dann lieber den
     # Originaltitel behalten als eine leere Suchanfrage zu schicken.
     assert search_title("(German Edition)") == "(German Edition)"
+
+
+def test_search_title_strips_leading_volume_number():
+    from bookdesk.providers.base import search_title
+    assert search_title("006 - Tag der Rache") == "Tag der Rache"
+
+
+def test_search_title_strips_short_leading_volume_number():
+    from bookdesk.providers.base import search_title
+    assert search_title("2 - Herr der Gestalten") == "Herr der Gestalten"
+
+
+def test_search_title_leaves_bare_numeric_titles_untouched():
+    from bookdesk.providers.base import search_title
+    assert search_title("1984") == "1984"
+
+
+def test_search_title_leaves_numbers_without_dash_untouched():
+    from bookdesk.providers.base import search_title
+    assert search_title("2001: A Space Odyssey") == "2001: A Space Odyssey"
+
+
+def test_search_title_strips_both_prefix_and_edition_suffix():
+    from bookdesk.providers.base import search_title
+    assert search_title("006 - Tag der Rache (German Edition)") == "Tag der Rache"
