@@ -13,7 +13,7 @@ from .thumbs import CoverLoader
 
 COVER_W = 220
 
-SOURCE_NAMES = {"openlibrary": "OpenLibrary"}
+SOURCE_NAMES = {"openlibrary": "OpenLibrary", "googlebooks": "Google Books"}
 
 
 class MetaPanel(QWidget):

@@ -11,6 +11,7 @@ from deskkit.settings import as_bool as _bool
 from .i18n import system_language
 from .matcher import DEFAULT_THRESHOLD, MatchConfig
 from .providers.base import MetadataProvider
+from .providers.googlebooks import GoogleBooksProvider
 from .providers.openlibrary import OpenLibraryProvider
 
 #: OpenLibrary erwartet keinen speziellen Sprachcode, die Oberflaechensprache
@@ -24,6 +25,7 @@ RENAME_TEMPLATE_DEFAULT = "{author}/{series} #{series_index} - {title}{ext}"
 class Settings:
     book_roots: list[str] = field(default_factory=list)
     use_openlibrary: bool = True
+    use_googlebooks: bool = True
     threshold: int = DEFAULT_THRESHOLD
     rename_template: str = RENAME_TEMPLATE_DEFAULT
     language: str = "auto"
@@ -34,6 +36,7 @@ class Settings:
         obj = cls(
             book_roots=json.loads(settings.value("book_roots", "[]") or "[]"),
             use_openlibrary=_bool(settings.value("use_openlibrary"), True),
+            use_googlebooks=_bool(settings.value("use_googlebooks"), True),
             threshold=int(settings.value("threshold", DEFAULT_THRESHOLD)),
             rename_template=settings.value(
                 "rename_template", RENAME_TEMPLATE_DEFAULT)
@@ -61,6 +64,8 @@ class Settings:
         providers: list[MetadataProvider] = []
         if self.use_openlibrary:
             providers.append(OpenLibraryProvider())
+        if self.use_googlebooks:
+            providers.append(GoogleBooksProvider())
         return providers
 
     def build_config(self) -> MatchConfig:

@@ -7,6 +7,10 @@ Noch kein Release getaggt — alles bislang unter „Unreleased“.
 
 ### Added
 
+- [Google Books](https://books.google.com) als zweite Metadaten-Quelle,
+  neben OpenLibrary — kostenlos, kein API-Key nötig, per Vorgabe aktiv,
+  unter *Einstellungen → Quellen* abschaltbar. Deckt oft Self-Publishing-/
+  Kindle-Titel ab, die OpenLibrary nicht kennt.
 - MOBI/AZW3/AZW-Unterstützung (nur lesend): sichten, lesen, Metadaten
   automatisch abgleichen. Titel mit KF8-Anteil (praktisch alle AZW3 und
   neueren MOBI-Titel) werden intern zu einem gleichwertigen EPUB entpackt

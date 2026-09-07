@@ -89,6 +89,8 @@ class Item:
     def source_url(self) -> str | None:
         if self.source == "openlibrary" and self.external_id:
             return f"https://openlibrary.org{self.external_id}"
+        if self.source == "googlebooks" and self.external_id:
+            return f"https://books.google.com/books?id={self.external_id}"
         return None
 
 

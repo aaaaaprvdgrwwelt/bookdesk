@@ -13,8 +13,9 @@ Linux, Windows und macOS. Oberfläche auf Deutsch und Englisch.
 Unterstützte Formate: **EPUB** (Kapitel-Reader), **PDF** (Seiten-Reader) und
 **MOBI/AZW3/AZW** (nur lesend, siehe [Formate](#formate)). Metadaten
 kommen zuerst aus der Datei selbst, ergänzt durch einen optionalen
-Abgleich gegen [OpenLibrary](https://openlibrary.org) (kostenlos, kein
-API-Key nötig).
+Abgleich gegen [OpenLibrary](https://openlibrary.org) und
+[Google Books](https://books.google.com) (beide kostenlos, kein API-Key
+nötig — siehe [Metadaten-Quellen](#metadaten-quellen)).
 
 > Status: nutzbar. Entwickelt und getestet unter Linux; Windows und macOS
 > sollten funktionieren (reines Qt/Python), sind aber nicht manuell
@@ -99,14 +100,28 @@ markiert die Datei beim Scannen klar als **Fehler** mit dem Hinweis
 „DRM-geschützt“, statt sie stillschweigend mit leerem oder geratenem Titel
 in der Bibliothek zu führen.
 
-## Metadaten-Quelle
+## Metadaten-Quellen
 
-**[OpenLibrary](https://openlibrary.org)** — kein API-Key nötig, per
-Vorgabe aktiv, unter *Einstellungen → Quellen* abschaltbar. Liefert Titel,
-Autor(en), Beschreibung und ein Cover, gesucht über Titel und Autor aus
-den vorhandenen Metadaten bzw. dem Dateinamen. Die Metadaten werden nicht
-automatisch in die Ebook-Datei zurückgeschrieben — dafür gibt es
-**Metadaten in Datei speichern …** (`Strg+S`), ausdrücklich auf Wunsch.
+Beide kostenlos, kein API-Key nötig, beide per Vorgabe aktiv, unter
+*Einstellungen → Quellen* einzeln abschaltbar. Liefern Titel, Autor(en),
+Beschreibung und ein Cover, gesucht über Titel und Autor aus den
+vorhandenen Metadaten bzw. dem Dateinamen. Sind beide aktiv, werden
+Treffer aus beiden Quellen gesammelt und gemeinsam bewertet — der beste
+Treffer gewinnt, unabhängig davon, welche Quelle ihn geliefert hat.
+
+* **[OpenLibrary](https://openlibrary.org)** — gute Abdeckung bei klassisch
+  verlegten Büchern.
+* **[Google Books](https://books.google.com)** — deckt oft Self-
+  Publishing-/Kindle-Titel ab, die OpenLibrary nicht kennt (z. B. deutsche
+  Übersetzungen kleinerer US-Indie-Reihen, die nur über
+  Amazons Self-Publishing-Programm erschienen sind). Ohne eigenen API-Key
+  gilt ein grosszügiges, aber nicht dokumentiertes Tageslimit pro IP —
+  bei Überschreitung wird diese Quelle für den Abgleich einfach
+  übersprungen, statt den Abgleich abzubrechen.
+
+Die Metadaten werden nicht automatisch in die Ebook-Datei
+zurückgeschrieben — dafür gibt es **Metadaten in Datei speichern …**
+(`Strg+S`), ausdrücklich auf Wunsch.
 
 ## Formate
 

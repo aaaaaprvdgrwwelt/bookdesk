@@ -54,6 +54,17 @@ class SettingsDialog(QDialog):
         form = QFormLayout(ol_box)
         form.addRow(self.use_openlibrary)
 
+        gb_box = QGroupBox("Google Books")
+        self.use_googlebooks = QCheckBox(_("Aktiv (kein API-Key noetig)"))
+        self.use_googlebooks.setChecked(settings.use_googlebooks)
+        gb_form = QFormLayout(gb_box)
+        gb_form.addRow(self.use_googlebooks)
+        gb_hint = QLabel(_(
+            "Deckt oft Self-Publishing-/Kindle-Titel ab, die OpenLibrary "
+            "nicht kennt."))
+        gb_hint.setWordWrap(True)
+        gb_form.addRow(gb_hint)
+
         threshold_box = QGroupBox(_("Schwellwert fuer automatische Zuordnung"))
         self.threshold = QSlider(Qt.Horizontal)
         self.threshold.setRange(0, 100)
@@ -66,6 +77,7 @@ class SettingsDialog(QDialog):
         row.addWidget(self.threshold_label)
 
         layout.addWidget(ol_box)
+        layout.addWidget(gb_box)
         layout.addWidget(threshold_box)
         layout.addStretch(1)
         return widget
@@ -97,6 +109,7 @@ class SettingsDialog(QDialog):
         self.result_settings = Settings(
             book_roots=self.book_roots.roots(),
             use_openlibrary=self.use_openlibrary.isChecked(),
+            use_googlebooks=self.use_googlebooks.isChecked(),
             threshold=self.threshold.value(),
             rename_template=self.rename_template.text().strip(),
             language=self.language.currentData(),

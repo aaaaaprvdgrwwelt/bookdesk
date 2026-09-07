@@ -13,19 +13,23 @@ HELP_HTML = """
     dabei zuerst aus der Datei selbst (EPUB-Metadaten bzw. PDF-Dokument-
     eigenschaften).</li>
 <li><b>Automatisch zuordnen</b> ergaenzt fehlende Angaben und ein Cover
-    ueber <a href="https://openlibrary.org">OpenLibrary</a> - kostenlos,
-    kein API-Key noetig. Unsichere oder fehlgeschlagene Treffer bleiben
-    markiert und lassen sich per Rechtsklick &rarr; <i>Manuell zuordnen</i>
-    von Hand nachtragen.</li>
+    ueber <a href="https://openlibrary.org">OpenLibrary</a> und
+    <a href="https://books.google.com">Google Books</a> - beide kostenlos,
+    kein API-Key noetig, beide gleichzeitig aktiv. Unsichere oder
+    fehlgeschlagene Treffer bleiben markiert und lassen sich per
+    Rechtsklick &rarr; <i>Manuell zuordnen</i> von Hand nachtragen.</li>
 <li>Doppelklick oder <b>Lesen</b> oeffnet den Reader - EPUB kapitelweise,
     PDF seitenweise. Die zuletzt gelesene Stelle wird gemerkt.</li>
 </ol>
 
-<h2>Was OpenLibrary liefert</h2>
+<h2>Was die Quellen liefern</h2>
 <p>Titel, Autor(en), Beschreibung und ein Cover, gesucht ueber Titel und
-Autor aus den vorhandenen Metadaten bzw. dem Dateinamen. Die Metadaten
-werden nicht in die Ebook-Datei zurueckgeschrieben - sie dienen nur der
-Anzeige und dem Umbenennen.</p>
+Autor aus den vorhandenen Metadaten bzw. dem Dateinamen. Sind beide
+Quellen aktiv, werden ihre Treffer gemeinsam bewertet - der beste Treffer
+gewinnt, unabhaengig davon, welche Quelle ihn geliefert hat.
+<b>Google Books</b> deckt oft Self-Publishing-/Kindle-Titel ab, die
+OpenLibrary nicht kennt. Die Metadaten werden nicht in die Ebook-Datei
+zurueckgeschrieben - sie dienen nur der Anzeige und dem Umbenennen.</p>
 
 <h2>Unterstuetzte Formate</h2>
 <p><b>EPUB</b>: Kapitelweiser Reader, Metadaten aus der eingebetteten OPF-
